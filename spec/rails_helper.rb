@@ -19,27 +19,27 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.filter_rails_from_backtrace!
-Shoulda::Matchers.configure do |config|
-  config.integrate do |with|
-    with.test_framework :rspec
-    with.library :rails
+  Shoulda::Matchers.configure do |config|
+    config.integrate do |with|
+      with.test_framework :rspec
+      with.library :rails
+    end
   end
-end
 
-VCR.configure do |c|
-  c.cassette_library_dir = "spec/casettes"
-  c.hook_into :webmock
-end
+  VCR.configure do |c|
+    c.cassette_library_dir = "spec/casettes"
+    c.hook_into :webmock
+  end
 
-config.before(:suite) do
-  DatabaseCdata
-  DatabaseCleaner.strategy = :transaction # rollleaner.clean_with :truncation  # clean DB of any leftover back transactions between each test
-end
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction # rollleaner.clean_with :truncation  # clean DB of any leftover back transactions between each test
+  end
 
-config.before(:each) do
-  DatabaseCleaner.start
-end
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
 
-config.after(:each) do
-  DatabaseCleaner.clean
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
 end
