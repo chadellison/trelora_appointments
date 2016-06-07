@@ -1,0 +1,112 @@
+-- ---
+-- Globals
+-- ---
+
+-- SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+-- SET FOREIGN_KEY_CHECKS=0;
+
+-- ---
+-- Table 'users'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `users` (
+  `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+  `username` INTEGER NULL DEFAULT NULL,
+  `icon` INTEGER NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'appointments'
+--
+-- ---
+
+DROP TABLE IF EXISTS `appointments`;
+
+CREATE TABLE `appointments` (
+  `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+  `start_time` INTEGER NULL DEFAULT NULL,
+  `status` INTEGER NULL DEFAULT NULL,
+  `id_addresses` INTEGER NULL DEFAULT NULL,
+  `id_users` INTEGER NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'locations'
+--
+-- ---
+
+DROP TABLE IF EXISTS `locations`;
+
+CREATE TABLE `locations` (
+  `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+  `address` INTEGER NULL DEFAULT NULL,
+  `longitude` INTEGER NULL DEFAULT NULL,
+  `latitude` INTEGER NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'roles'
+--
+-- ---
+
+DROP TABLE IF EXISTS `roles`;
+
+CREATE TABLE `roles` (
+  `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+  `title` INTEGER NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'user_roles'
+--
+-- ---
+
+DROP TABLE IF EXISTS `user_roles`;
+
+CREATE TABLE `user_roles` (
+  `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+  `id_users` INTEGER NULL DEFAULT NULL,
+  `id_roles` INTEGER NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Foreign Keys
+-- ---
+
+ALTER TABLE `appointments` ADD FOREIGN KEY (id_addresses) REFERENCES `locations` (`id`);
+ALTER TABLE `appointments` ADD FOREIGN KEY (id_users) REFERENCES `users` (`id`);
+ALTER TABLE `user_roles` ADD FOREIGN KEY (id_users) REFERENCES `users` (`id`);
+ALTER TABLE `user_roles` ADD FOREIGN KEY (id_roles) REFERENCES `roles` (`id`);
+
+-- ---
+-- Table Properties
+-- ---
+
+-- ALTER TABLE `users` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `appointments` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `locations` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `roles` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `user_roles` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ---
+-- Test Data
+-- ---
+
+-- INSERT INTO `users` (`id`,`username`,`icon`) VALUES
+-- ('','','');
+-- INSERT INTO `appointments` (`id`,`start_time`,`status`,`id_addresses`,`id_users`) VALUES
+-- ('','','','','');
+-- INSERT INTO `locations` (`id`,`address`,`longitude`,`latitude`) VALUES
+-- ('','','','');
+-- INSERT INTO `roles` (`id`,`title`) VALUES
+-- ('','');
+-- INSERT INTO `user_roles` (`id`,`id_users`,`id_roles`) VALUES
+-- ('','','');

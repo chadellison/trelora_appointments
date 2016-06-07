@@ -23,7 +23,6 @@ end
 group :test do
   gem 'capybara'
   gem 'launchy'
-  gem 'capybara-webkit'
   gem 'vcr'
   gem 'webmock'
   gem 'shoulda-matchers', github: 'thoughtbot/shoulda-matchers'
