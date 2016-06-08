@@ -13,6 +13,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'unicorn'
 gem 'bcrypt', '~> 3.1.7'
 gem 'faraday'
+gem "omniauth-google-oauth2"
 
 group :development, :test do
   gem 'selenium-webdriver'
