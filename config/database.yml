@@ -81,5 +81,4 @@ test:
 production:
   <<: *default
   database: trelora_appointments_production
-  username: trelora_appointments
-  password: <%= ENV['TRELORA_APPOINTMENTS_DATABASE_PASSWORD'] %>
+  
