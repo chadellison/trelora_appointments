@@ -1,3 +1,4 @@
+<%= link_to "Sign in with Google", google_login_path %>
 <div id="map"></div>
 <script>
   function initMap() {
@@ -27,7 +28,7 @@
     service.route({
       origin: origin,
       destination: destination,
-      waypoints: waypoints,``
+      waypoints: waypoints,
       travelMode: google.maps.TravelMode.DRIVING,
       avoidTolls: true
     }, function(response, status) {

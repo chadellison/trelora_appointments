@@ -26,10 +26,10 @@ RSpec.configure do |config|
     end
   end
 
-  VCR.configure do |c|
-    c.cassette_library_dir = "spec/casettes"
-    c.hook_into :webmock
-  end
+  # VCR.configure do |c|
+  #   c.cassette_library_dir = "spec/casettes"
+  #   c.hook_into :webmock
+  # end
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction # rollleaner.clean_with :truncation  # clean DB of any leftover back transactions between each test
