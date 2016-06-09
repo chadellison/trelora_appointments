@@ -14,12 +14,14 @@ class GoogleCalendarService
   private
 
     def list_events #pass in dates here
-      tomorrow = (Date.today + 1).to_datetime.to_s
-      yesterday = (Date.today - 1).to_datetime.to_s
+      tomorrow = Date.tomorrow.to_datetime.to_s
+      yesterday = Date.yesterday.to_datetime.to_s
       connection.get do |req|
         req.params["timeMin"] = yesterday
         req.params["timeMax"] = tomorrow
-        req.params["singleEvents"] = true
+        req.params["kind"] = "calendar#event"
+
+        # req.params["q"] = "Densem downtown"
       end
     end
 
