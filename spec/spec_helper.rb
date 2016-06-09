@@ -46,7 +46,7 @@ RSpec.configure do |config|
     end
 
     5.times do |i|
-      Appointment.create(location_id: @locations.all[i + 3].id, user_id: User.all[2].id, start_time: Date.current)
+      Appointment.create(location_id: Location.all[i + 3].id, user_id: User.all[2].id, start_time: Date.current)
     end
     Appointment.all
   end
