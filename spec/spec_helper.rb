@@ -12,7 +12,7 @@ RSpec.configure do |config|
 
   def create_users(num)
     num.times do |i|
-      User.create(username: "name#{i}", icon: "icon#{i}.png")
+      User.create(username: "name#{i}")
     end
     @users = User.all
   end
@@ -42,11 +42,11 @@ RSpec.configure do |config|
 
   def create_appointments
     3.times do |i|
-      Appointment.create(location_id: @locations.all[i].id, user_id: User.all[1].id, start_time: Date.current)
+      Appointment.create(location_id: @locations.all[i].id, start_time: Date.current)
     end
 
     5.times do |i|
-      Appointment.create(location_id: Location.all[i + 3].id, user_id: User.all[2].id, start_time: Date.current)
+      Appointment.create(location_id: Location.all[i + 3].id, start_time: Date.current)
     end
     Appointment.all
   end

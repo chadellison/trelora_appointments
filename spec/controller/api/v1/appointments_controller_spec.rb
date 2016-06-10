@@ -18,7 +18,7 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do
 
       app1 = Appointment.first
       app2 = Appointment.last
-      
+
       expect(response).to be_success
       expect(parsed_json.count).to eq(8)
       expect(parsed_json.first["id"]).to eq(app1.id)
@@ -26,9 +26,6 @@ RSpec.describe Api::V1::AppointmentsController, type: :controller do
       expect(parsed_json.first["location"]["address"]).to eq(app1.location.address)
       expect(parsed_json.first["location"]["latitude"]).to eq(app1.location.latitude)
       expect(parsed_json.first["location"]["longitude"]).to eq(app1.location.longitude)
-      expect(parsed_json.first["user"]["username"]).to eq(app1.user.username)
-      expect(parsed_json.first["user_roles"]["titles"].first).to eq(app1.user.user_roles.first.role.title)
     end
   end
-
 end
