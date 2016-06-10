@@ -1,11 +1,6 @@
 class DashboardController < ApplicationController
-  respond_to :json, :html
-
   def index
-    
-  end
-
-  def calendar
-    respond_with GoogleCalendarService.new.events_hash
+    a = GoogleCalendarService.new.store_events
+    # binding.pry
   end
 end

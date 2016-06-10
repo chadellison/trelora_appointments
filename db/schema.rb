@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160608162058) do
+ActiveRecord::Schema.define(version: 20160610054355) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,13 +20,22 @@ ActiveRecord::Schema.define(version: 20160608162058) do
     t.datetime "start_time"
     t.string   "status"
     t.integer  "location_id"
-    t.integer  "user_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "field_worker_id"
+    t.datetime "end_time"
+    t.string   "description"
   end
 
   add_index "appointments", ["location_id"], name: "index_appointments_on_location_id", using: :btree
-  add_index "appointments", ["user_id"], name: "index_appointments_on_user_id", using: :btree
+
+  create_table "field_workers", force: :cascade do |t|
+    t.string   "username"
+    t.string   "icon"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "role"
+  end
 
   create_table "locations", force: :cascade do |t|
     t.string   "address"
@@ -54,7 +63,6 @@ ActiveRecord::Schema.define(version: 20160608162058) do
 
   create_table "users", force: :cascade do |t|
     t.string   "username"
-    t.string   "icon"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.string   "uid"
@@ -62,7 +70,6 @@ ActiveRecord::Schema.define(version: 20160608162058) do
   end
 
   add_foreign_key "appointments", "locations"
-  add_foreign_key "appointments", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
 end

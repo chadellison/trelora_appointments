@@ -15,4 +15,5 @@
 # Ignore application configuration
 /config/application.yml
 /coverage
+/config/client_secrets.json
 /app/services/client_secrets.json
