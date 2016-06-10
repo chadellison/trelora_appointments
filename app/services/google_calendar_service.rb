@@ -1,31 +1,40 @@
+require 'googleauth'
+require 'google/apis/calendar_v3'
+
 class GoogleCalendarService
-  attr_reader :connection
 
   def initialize
-    @connection = Faraday.new(url: "https://www.googleapis.com/calendar/v3/calendars/chad.ellison0123%40gmail.com/events")
-    @connection.params[:access_token] = User.last.oauth_token if User.last
-    @connection.params[:key] = ENV["GOOGLE_API_KEY"]
+    @calendar = Google::Apis::CalendarV3::CalendarService.new
+    scopes = ["https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/plus.login"]
+    @calendar.authorization = Google::Auth.get_application_default(scopes)
+    binding.pry
   end
 
-  def events_hash
-    parse(list_events)
+  def list_events
+    @calendar.list_events("primary")
   end
 
-  private
+  def create_event(event)
+    @calendar.insert_event("primary", event(event)).items
+  end
 
-    def list_events #pass in dates here
-      tomorrow = Date.tomorrow.to_datetime.to_s
-      yesterday = Date.yesterday.to_datetime.to_s
-      connection.get do |req|
-        req.params["timeMin"] = yesterday
-        req.params["timeMax"] = tomorrow
-        req.params["kind"] = "calendar#event"
+  def event(hash)
+    event = Google::Apis::CalendarV3::Event.new({
+      summary: hash[:summary],
+      location: hash[:location],
+      description: hash[:description],
+      start: {
+        date_time: hash[:start_time],
+        time_zone: 'America/Denver',
+      },
+      end: {
+        date_time: hash[:end_time],
+        time_zone: 'America/Denver',
+      },
+      attendees: [
+        {email: hash[:email]}
+      ]
+    })
+  end
 
-        # req.params["q"] = "Densem downtown"
-      end
-    end
-
-    def parse(response)
-      JSON.parse(response.body)
-    end
 end
