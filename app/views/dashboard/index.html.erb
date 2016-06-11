@@ -2,6 +2,7 @@
   <ul>
     <li class="active login"><%= link_to "Sign in with Google", google_login_path if !current_user %></li>
     <li class="active login"><%= link_to "Logout", session_path, method: :delete if current_user %></li>
+    <li class="add_user"><%= link_to "Add User", "#" %></li>
     <li class="photographer"><%= link_to "Photographer", "#" %></li>
     <li class="appraiser"><%= link_to "Appraiser", "#" %></li>
     <li><input class="search" type="text" name="search" placeholder="New Address">
@@ -9,8 +10,10 @@
     </li>
   </ul>
 </div>
+<div id="user-create-menu">
+  <%= render partial: "dashboard/user_create" %>
+</div>
 <div id="map"></div>
-
 <script>
   function initMap() {
       var appointmentData = ''
