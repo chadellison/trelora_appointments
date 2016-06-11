@@ -3,47 +3,52 @@
 
 <script>
   function initMap() {
-    // $(document).ready(function(){
       var appointmentData = ''
       $.ajax({
         type: 'GET',
-        url: "http://localhost:3000/api/v1/appointments.json",
+        url: "http://localhost:3000/api/v1/field_workers.json",
         success: function(data) {
           returnData(data)
         }
       })
       function returnData(data){
-        appointmentData = data
-        console.table(appointmentData)
-      }
-    // })
+        fieldWorkerData = data
+
 
     var map = new google.maps.Map(document.getElementById('map'), {
     });
 
     var directionsService = new google.maps.DirectionsService;
-    var waypoints =  [[{location: 'Golden, CO'}, {location: 'Thornton, CO'}],
-      [{location: 'Colorado springs, CO'},{location: 'Greeley, CO'},{location: 'Aurora, CO'}]]
-    var origins = ["Denver, CO", "Fort Collins, CO"]
-    var destinations = ["Colorado Springs, CO", "Boulder, CO"]
+    var trelora = "2401 15th st, Denver CO 80202"
     var colors = ["blue", "red", "yellow"]
-    for (i = 0; i < origins.length; i++) {
+    $.each(fieldWorkerData, function(i, fieldWorker){
+      var name = fieldWorker.username
+      var icon = fieldWorker.icon
+      var appointments = fieldWorker.appointments
+      var waypoints = []
+      $.each(appointments, function(index, appointment){
+        waypoints.push({location: appointment.location.address})
+      })
 
+      console.log(waypoints)
+      var origin = appointments[0].location.address
+      length = appointments.length
+      var destination = appointments[length - 1].location.address
       var directionsDisplay = new google.maps.DirectionsRenderer({
         map: map,
         polylineOptions: {
           strokeColor: colors[i]
         }
       });
-      displayRoute(origins[i], destinations[i], waypoints[i], directionsService,
+      displayRoute(trelora, waypoints, directionsService,
           directionsDisplay);
-    }
+    })
   }
 
-  function displayRoute(origin, destination, waypoints, service, display) {
+  function displayRoute(trelora, waypoints, service, display) {
     service.route({
-      origin: origin,
-      destination: destination,
+      origin: trelora,
+      destination: trelora,
       waypoints: waypoints,
       travelMode: google.maps.TravelMode.DRIVING,
       avoidTolls: true
@@ -54,6 +59,7 @@
         alert('Could not display directions due to: ' + status);
       }
     });
+  }
   }
 
 </script>

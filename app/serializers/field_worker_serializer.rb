@@ -3,7 +3,7 @@ class FieldWorkerSerializer < ActiveModel::Serializer
 
   def appointments
     object.appointments.map do |appointment|
-      {appointment_info: appointment, location: appointment.location}
+      { info: appointment, location: appointment.location}
     end
   end
 end
