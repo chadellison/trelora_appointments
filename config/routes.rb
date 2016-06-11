@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   namespace "api", defaults: { :format => 'json' } do
     namespace "v1" do
       resources :appointments, only: [:index, :show]
+      resources :field_workers, only: [:index]
     end
   end
 end
