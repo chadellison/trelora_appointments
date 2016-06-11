@@ -38,7 +38,7 @@ li a:hover:not(.active) {
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
-.search {
+#pac-input {
   margin-top: 15px;
   width: 300px;
   margin-left: 10px;
