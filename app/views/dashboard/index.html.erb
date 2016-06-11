@@ -29,24 +29,32 @@
 
     var directionsService = new google.maps.DirectionsService;
     var trelora = "2401 15th st, Denver CO 80202"
-    var colors = ["blue", "red", "yellow"]
+    var colors = ["red", "green", "purple", "blue"]
     $.each(fieldWorkerData, function(i, fieldWorker){
       var name = fieldWorker.username
       var icon = fieldWorker.icon
       var appointments = fieldWorker.appointments
       var waypoints = []
+
       $.each(appointments, function(index, appointment){
         waypoints.push({location: appointment.location.address})
+
+        var marker = new google.maps.Marker({
+          position: {lat: appointment.location.latitude, lng: appointment.location.longitude},
+          icon: icon,
+          map: map
+        });
       })
 
-      console.log(waypoints)
       length = appointments.length
       var directionsDisplay = new google.maps.DirectionsRenderer({
         map: map,
+        suppressMarkers : true,
         polylineOptions: {
-          strokeColor: colors[i]
+          strokeColor: colors[i - 1]
         }
       });
+
       displayRoute(trelora, waypoints, directionsService,
           directionsDisplay);
     })
