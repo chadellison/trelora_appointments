@@ -1,6 +1,7 @@
 <div class="nav">
   <ul>
-    <li class="active login"><%= link_to "Sign in with Google", google_login_path %></li>
+    <li class="active login"><%= link_to "Sign in with Google", google_login_path if !current_user %></li>
+    <li class="active login"><%= link_to "Logout", session_path, method: :delete if current_user %></li>
     <li class="photographer"><%= link_to "Photographer", "#" %></li>
     <li class="appraiser"><%= link_to "Appraiser", "#" %></li>
     <li><input class="search" type="text" name="search" placeholder="New Address">
