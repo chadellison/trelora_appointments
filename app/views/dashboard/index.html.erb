@@ -1,11 +1,16 @@
 <div class="nav">
+
   <ul>
     <li class="active login"><%= link_to "Sign in with Google", google_login_path if !current_user %></li>
     <li class="active login"><%= link_to "Logout", session_path, method: :delete if current_user %></li>
     <li id="add-user"><%= link_to "Add User", "#" %></li>
     <li class="photographer"><%= link_to "Photographer", "#" %></li>
     <li class="appraiser"><%= link_to "Appraiser", "#" %></li>
+    <li class="datepicker">Date <input type="text" id="datepicker"></li>
   </ul>
+
+
+
 </div>
 
 <div id="user-menu" class="hidden" >

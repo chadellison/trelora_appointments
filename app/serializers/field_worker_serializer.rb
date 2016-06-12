@@ -6,5 +6,4 @@ class FieldWorkerSerializer < ActiveModel::Serializer
       { info: appointment, location: appointment.location}
     end
   end
-
 end

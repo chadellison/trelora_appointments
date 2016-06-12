@@ -10,7 +10,6 @@ class User < ActiveRecord::Base
       )
       first
     end
-
   end
 
   def self.update_or_create(attributes = {})
@@ -22,5 +21,4 @@ class User < ActiveRecord::Base
     obj.assign_attributes(attributes)
     obj
   end
-
 end
