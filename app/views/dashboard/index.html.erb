@@ -23,22 +23,91 @@
 </div>
 
 <script>
+
+
+
+
+
+
+
+
+
+
   function initMap() {
-      var appointmentData = ''
-      $.ajax({
-        type: 'GET',
-        url: "http://localhost:3000/api/v1/field_workers.json",
-        success: function(data) {
-          returnData(data)
-        }
-      })
+
+    $('#datepicker').datepicker({
+      onSelect: function(dateText, inst) {
+        $.ajax({
+          type: 'GET',
+          data: {day: dateText},
+          url: "http://localhost:3000/api/v1/field_workers.json",
+          success: function(data) {
+
+            returnData(data)
+
+          },
+          error: function(errorBody){
+            alert("error")
+          }
+        })
+      }
+    });
+    // $(document).ready(function() {
+    // $(function() {
+    //   $( "#datepicker" ).datepicker();
+    // });
+
+
+      // $.ajax({
+      //   type: 'GET',
+      //   url: "http://localhost:3000/api/v1/field_workers.json",
+      //   success: function(data) {
+      //     returnData(data)
+      //   }
+      // })
+
+        // $(function() {
+        //   $( "#datepicker" ).datepicker();
+        // });
+
+        // $('#datepicker').datepicker({
+        //   onSelect: function(dateText, inst) {
+        //     $.ajax({
+        //       type: 'GET',
+        //       data: {day: dateText},
+        //       url: "http://localhost:3000/api/v1/field_workers.json",
+        //       success: function(data) {
+        //         returnData(data)
+        //         console.log('hello')
+        //       },
+        //       error: function(errorBody){
+        //         alert("error")
+        //       }
+        //     })
+        //   }
+        // });
+      // })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       function returnData(data){
         fieldWorkerData = data
 
 
     var map = new google.maps.Map(document.getElementById('map'), {
     });
-
 
 
 
