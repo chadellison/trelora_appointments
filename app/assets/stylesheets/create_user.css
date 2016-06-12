@@ -1,6 +1,11 @@
 .user-create-menu {
   display: inline-block;
   width: 25%;
+  height: 93%;
+}
+
+.xit-box {
+  float: right;
 }
 
 .user-create-menu h3 {
