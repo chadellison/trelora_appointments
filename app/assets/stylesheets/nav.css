@@ -7,7 +7,7 @@ ul {
 }
 
 li {
-    float: left;
+  float: left;
 }
 
 li a {
@@ -54,7 +54,6 @@ li a:hover:not(.active) {
     display: inline-block;
     margin-left: 5px;
     outline: none;
-    /*background: url(button.png) no-repeat bottom;*/
 }
 
 .button:active {
