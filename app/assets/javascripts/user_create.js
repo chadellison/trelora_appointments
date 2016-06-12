@@ -14,12 +14,30 @@ $(document).ready(function() {
 
     $.ajax({
       type: 'POST',
-      url: 'https://localhost/api/v1/users.json',
+      url: 'http://localhost:3000/api/v1/users.json',
       dataType: "JSON",
       data: postParams,
-      success: function(newPost) {
-        alert("user created")
-      },
+      success: alert("user created"),
+      error: function(errorBody){
+        alert("error")
+      }
+    })
+  })
+
+  $("#f-w-submit").on('click', function(){
+    var postParams = { post:
+      { role: $("#f-w-role").val(),
+      username: $("#f-w-username").val(),
+      trelora_id: $("#f-w-trelora-id").val()
+      }
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:3000/api/v1/field_workers.json',
+      dataType: "JSON",
+      data: postParams,
+      success: alert("field worker created"),
       error: function(errorBody){
         alert("error")
       }
