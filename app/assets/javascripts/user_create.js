@@ -7,6 +7,14 @@ $(document).ready(function() {
     $('#map').addClass("map-width-75");
   });
 
+  $('#exit-user-menu').on('click', function() {
+    $('#user-menu').removeClass("user-create-menu");
+    $('#user-menu').addClass("hidden");
+    $('#map').removeClass("map-width-75");
+    $('#map').addClass("map-width-100");
+  });
+
+
   $("#user-submit").on('click', function(){
     var postParams = { post:
       { profile: $("#user-profile").val() }
