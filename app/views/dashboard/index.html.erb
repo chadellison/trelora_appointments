@@ -7,6 +7,7 @@
     <li class="photographer"><%= link_to "Photographer", "#" %></li>
     <li class="appraiser"><%= link_to "Appraiser", "#" %></li>
     <li class="datepicker">Date <input type="text" id="datepicker"></li>
+    <li id="demo"></li>
   </ul>
 
 
@@ -16,24 +17,29 @@
 <div id="user-menu" class="hidden" >
   <%= render partial: "dashboard/user_create" %>
 </div>
-<div id="fuck">
-</div>
 
-<div id="map" class="map-width-100">
-</div>
+
+<div id="map" class="map-width-100"></div>
+<div id="fuck"></div>
 
 <script>
 
-
-
-
-
-
-
-
-
-
   function initMap() {
+    // if($("#fuck").){
+     console.log($("#fuck").show)
+      $.ajax({
+        type: 'GET',
+        url: "http://localhost:3000/api/v1/field_workers.json",
+        success: function(data) {
+          // $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Search Box">')
+          returnData(data)
+
+        },
+        error: function(errorBody){
+          alert("error")
+        }
+      })
+    // }
 
     $('#datepicker').datepicker({
       onSelect: function(dateText, inst) {
@@ -62,13 +68,13 @@
 
 
     var map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 39.753, lng: -104.9775},
+      zoom: 10
     });
-
 
 
     var input = document.getElementById('pac-input');
 
-    console.log(input)
       var searchBox = new google.maps.places.SearchBox(input);
       map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
       map.addListener('bounds_changed', function() {
@@ -76,10 +82,6 @@
         });
 
     var markers = [];
-        // Listen for the event fired when the user selects a prediction and retrieve
-        // more details for that place.
-
-
 
       searchBox.addListener('places_changed', function() {
         var places = searchBox.getPlaces();
@@ -91,7 +93,6 @@
         markers.forEach(function(marker) {
           marker.setMap(null);
         });
-        markers = [];
 
         var bounds = new google.maps.LatLngBounds();
           places.forEach(function(place) {
@@ -110,7 +111,9 @@
               title: place.name,
               position: place.geometry.location
             }));
-
+            $.each(markers, function(i,marker){
+              attachSecretMessage(marker, place.name);
+            })
             if (place.geometry.viewport) {
               // Only geocodes have viewport.
               bounds.union(place.geometry.viewport);
@@ -131,9 +134,18 @@
       var appointments = fieldWorker.appointments
       var waypoints = []
 
+
       $.each(appointments, function(index, appointment){
 
+
         waypoints.push({location: appointment.location.address})
+
+        var appointmentInfo = name + "<br />" +
+          appointment.location.address + "</br>" +
+          "start time: " + appointment.info.start_time + "</br>" +
+          "end time: " + appointment.info.end_time + "</br>" +
+          appointment.info.description
+        ;
 
 
         var marker = new google.maps.Marker({
@@ -141,11 +153,14 @@
           icon: icon,
           map: map
         });
+
+        attachSecretMessage(marker, appointmentInfo);
       })
 
       length = appointments.length
       var directionsDisplay = new google.maps.DirectionsRenderer({
         map: map,
+
         suppressMarkers : true,
         polylineOptions: {
           strokeColor: colors[i - 1]
@@ -166,6 +181,7 @@
         avoidTolls: true
       }, function(response, status) {
         if (status === google.maps.DirectionsStatus.OK) {
+          display.setOptions({ preserveViewport: true });
           display.setDirections(response);
         } else {
           alert('Could not display directions due to: ' + status);
@@ -174,7 +190,25 @@
     }
   }
 
+  function attachSecretMessage(marker, secretMessage) {
+    var infowindow = new google.maps.InfoWindow({
+      content: secretMessage
+    });
+
+    marker.addListener('mouseover', function() {
+
+      infowindow.open(marker.get('map'), marker);
+
+    });
+    marker.addListener('mouseout', function() {
+      infowindow.close(marker.get('map'), marker);
+    });
+
+  }
+
+
 </script>
 <script async defer
 src="https://maps.googleapis.com/maps/api/js?key=<%= ENV["GOOGLE_API_KEY"] %>&libraries=places&callback=initAutocomplete&callback=initMap">
 </script>
+</div>
