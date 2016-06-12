@@ -7,6 +7,7 @@
     <li class="photographer"><%= link_to "Photographer", "#" %></li>
     <li class="appraiser"><%= link_to "Appraiser", "#" %></li>
     <li class="datepicker">Date <input type="text" id="datepicker"></li>
+    <li id="demo"></li>
   </ul>
 
 
@@ -19,12 +20,26 @@
 
 
 <div id="map" class="map-width-100"></div>
-<div id="fuck">
-</div>
+<div id="fuck"></div>
 
 <script>
-  flash("test")
+
   function initMap() {
+    // if($("#fuck").){
+     console.log($("#fuck").show)
+      $.ajax({
+        type: 'GET',
+        url: "http://localhost:3000/api/v1/field_workers.json",
+        success: function(data) {
+          // $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Search Box">')
+          returnData(data)
+
+        },
+        error: function(errorBody){
+          alert("error")
+        }
+      })
+    // }
 
     $('#datepicker').datepicker({
       onSelect: function(dateText, inst) {
@@ -78,7 +93,6 @@
         markers.forEach(function(marker) {
           marker.setMap(null);
         });
-        markers = [];
 
         var bounds = new google.maps.LatLngBounds();
           places.forEach(function(place) {
@@ -97,7 +111,9 @@
               title: place.name,
               position: place.geometry.location
             }));
-
+            $.each(markers, function(i,marker){
+              attachSecretMessage(marker, place.name);
+            })
             if (place.geometry.viewport) {
               // Only geocodes have viewport.
               bounds.union(place.geometry.viewport);
@@ -118,9 +134,18 @@
       var appointments = fieldWorker.appointments
       var waypoints = []
 
+
       $.each(appointments, function(index, appointment){
 
+
         waypoints.push({location: appointment.location.address})
+
+        var appointmentInfo = name + "<br />" +
+          appointment.location.address + "</br>" +
+          "start time: " + appointment.info.start_time + "</br>" +
+          "end time: " + appointment.info.end_time + "</br>" +
+          appointment.info.description
+        ;
 
 
         var marker = new google.maps.Marker({
@@ -128,6 +153,8 @@
           icon: icon,
           map: map
         });
+
+        attachSecretMessage(marker, appointmentInfo);
       })
 
       length = appointments.length
@@ -162,6 +189,23 @@
       });
     }
   }
+
+  function attachSecretMessage(marker, secretMessage) {
+    var infowindow = new google.maps.InfoWindow({
+      content: secretMessage
+    });
+
+    marker.addListener('mouseover', function() {
+
+      infowindow.open(marker.get('map'), marker);
+
+    });
+    marker.addListener('mouseout', function() {
+      infowindow.close(marker.get('map'), marker);
+    });
+
+  }
+
 
 </script>
 <script async defer
