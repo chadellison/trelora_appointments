@@ -2,8 +2,11 @@ class Api::V1::UsersController < Api::ApiController
   respond_to :json
 
   def create
-    user = User.create(user_params["post"])
-    redirect_to api_v1_user_path(user.id)
+    if user = User.create(user_params["post"])
+      redirect_to api_v1_user_path(user.id)
+    else
+      respond_with JSON.generate({"error" => "sorry try again" })
+    end
   end
 
   def show

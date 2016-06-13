@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
 
   def self.from_omniauth(auth_info)
     if User.find_by(profile: auth_info["info"]["urls"]["Google"])
-      where(uid: auth_info[:uid]).update_or_create(
+      where(uid: auth_info[:uid]).update(
         uid: auth_info.uid,
         username: auth_info.info.name
       )

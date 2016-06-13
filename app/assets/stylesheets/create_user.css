@@ -17,7 +17,6 @@
 }
 
 .user-fields {
-  margin-bottom: 8px;
   margin-left: 10px;
   padding-left: 5px;
   width: 200px;
@@ -38,6 +37,26 @@
   width: 208px;
   outline: none;
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#f-w-trelora-id {
+  /*margin-bottom: 10px;*/
+  width: 60px;
+  height: 20px;
+  font-size: 10px;
+  font-family: Tahoma;
+  border-style: solid;
+  color: #333;
+}
+
+#role-span {
+  height: 30px;
+  width: 30px;
+  padding-bottom: 10px;
+}
+
+.this {
+  /*padding: 10px;*/
 }
 
 .submit-button:hover:not(.active) {

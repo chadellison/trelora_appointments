@@ -25,7 +25,9 @@ $(document).ready(function() {
       url: 'http://localhost:3000/api/v1/users.json',
       dataType: "JSON",
       data: postParams,
-      success: alert("user created"),
+      success: function(data){
+      },
+
       error: function(errorBody){
         alert("error")
       }
@@ -39,14 +41,14 @@ $(document).ready(function() {
       trelora_id: $("#f-w-trelora-id").val()
       }
     }
-
     $.ajax({
       type: 'POST',
       url: 'http://localhost:3000/api/v1/field_workers.json',
       dataType: "JSON",
       data: postParams,
-      success: alert("field worker created"),
+      success: alert('test'),
       error: function(errorBody){
+        i = i + 1
         alert("error")
       }
     })

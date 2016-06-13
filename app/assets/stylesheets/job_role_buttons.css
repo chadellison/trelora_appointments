@@ -1,0 +1,17 @@
+.radio_item {
+  display: none;
+}
+
+.label_item {
+opacity: 0.6;
+}
+
+.radio_item:checked + label {
+opacity: 1;
+}
+
+.job-role-button {
+  margin-top: 5px;
+  height: 30px;
+  width: 30px;
+}

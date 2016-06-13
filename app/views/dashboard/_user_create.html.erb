@@ -15,7 +15,19 @@
   <hr>
   <div class="form-group">
     <input class="user-fields" placeholder="antonio@trelora.com" type="text" id="f-w-username">
-    <input class="user-fields" placeholder="photographer" type="text" id="f-w-role">
-    <input class="user-fields" placeholder="trelora id" type="text" id="f-w-trelora-id">
+    <div class="this">
+      <span id="role-span">
+        <input placeholder="trelora id" type="text" id="f-w-trelora-id">
+      </span>
+      <span class="job-role-button">
+        <input type="radio" class="radio_item" value="photographer" name="transportation" id="photographer">
+        <label class="label_item" for="photographer"><%= (image_tag "camera_pictogram.png", width: "30px", height: "30px" ) %></label>
+      </span>
+      <span class="job-role-button">
+        <input type="radio" class="radio_item" value="appraiser" name="transportation" id="appraiser">
+        <label class="label_item" for="appraiser"><%= (image_tag "appraiser.jpg", width: "30px", height: "30px" ) %></label>
+      </span>
+    </div>
+
   </div>
   <input class="submit-button" id="f-w-submit" type="button" name="submit" value="Add a new field worker">
