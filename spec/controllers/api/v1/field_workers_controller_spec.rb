@@ -25,4 +25,24 @@ RSpec.describe Api::V1::FieldWorkersController, type: :controller do
       expect(field_worker_hash.last[:username]).to eq "Frank"
     end
   end
+
+  describe "POST#create" do
+    it "responds successfully" do
+      expect do
+        post :create, format: :json, post: { username: "Jones", role: "photographer"}
+      end.to change { FieldWorker.count }.by(1)
+
+      expect(response).to have_http_status(:success)
+    end
+  end
+
+  describe "DELETE#destroy" do
+    it "responds successfully" do
+      expect do
+        delete :destroy, format: :json,
+      end.to change { FieldWorker.count }.by(-1)
+
+      expect(response).to have_http_status(:success)
+    end
+  end
 end
