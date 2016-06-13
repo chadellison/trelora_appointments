@@ -1,7 +1,7 @@
 class Api::V1::FieldWorkersController < Api::ApiController
   respond_to :json
 
-  def index    
+  def index
     respond_with FieldWorker.all, day: params[:day]
   end
 
@@ -12,6 +12,13 @@ class Api::V1::FieldWorkersController < Api::ApiController
     icon = body.member["avatar"]["avatar"]["small"]["url"]
     field_worker.update(icon: icon)
     redirect_to api_v1_field_workers_path
+  end
+
+  def destroy
+    FieldWorker.find(params[:id]).destroy
+    respond_to do |format|
+      format.json { head :no_content }
+    end
   end
 
   private
