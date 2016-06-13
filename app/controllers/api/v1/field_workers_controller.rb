@@ -14,8 +14,8 @@ class Api::V1::FieldWorkersController < Api::ApiController
     redirect_to api_v1_field_workers_path
   end
 
-  def destroy
-    FieldWorker.find(params[:id]).destroy
+  def update
+    FieldWorker.find(params[:id]).update(status: "inactive")
     respond_to do |format|
       format.json { head :no_content }
     end
