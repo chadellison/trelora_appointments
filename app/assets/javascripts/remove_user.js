@@ -17,6 +17,6 @@ $(document).ready(function() {
 
   $("#remove-user-menu").delegate("delete").on('click', function(){
     var id = event.target.id
-    $("#" + id).closest("div").fadeOut()
+    $("#" + id).closest("div.employee").fadeOut()
   })
 })
