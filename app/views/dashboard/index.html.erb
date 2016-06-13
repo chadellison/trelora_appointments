@@ -1,23 +1,22 @@
 <div class="nav">
-
   <ul>
     <li class="active login"><%= link_to "Sign in with Google", google_login_path if !current_user %></li>
     <li class="active login"><%= link_to "Logout", session_path, method: :delete if current_user %></li>
     <li id="add-user"><%= link_to "Add User", "#" %></li>
+    <li id="remove-user"><%= link_to "Remove User", "#" %></li>
     <li class="photographer"><%= link_to "Photographer", "#" %></li>
     <li class="appraiser"><%= link_to "Appraiser", "#" %></li>
     <li class="datepicker">Date <input type="text" id="datepicker"></li>
     <li id="demo"></li>
   </ul>
-
-
-
 </div>
 
-<div id="user-menu" class="hidden" >
+<div id="user-menu" class="hidden">
   <%= render partial: "dashboard/user_create" %>
 </div>
-
+<div id="remove-user-menu" class="hidden" >
+  <%= render partial: "dashboard/remove_user" %>
+</div>
 
 <div id="map" class="map-width-100"></div>
 <div id="fuck"></div>
