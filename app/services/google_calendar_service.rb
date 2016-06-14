@@ -11,14 +11,15 @@ class GoogleCalendarService
 
   def store_events
     calendar.list_events("primary").items.each do |event|
-      location = Location.find_or_create_by(address: event.location)
-
-      field_worker = FieldWorker.find_or_create_by(username: event.attendees.last.email)
-      Appointment.find_or_create_by(start_time: event.start.date_time,
-        end_time: event.end.date_time,
-        field_worker_id: field_worker.id,
-        location_id: location.id,
-        description: event.summary)
+      field_worker = FieldWorker.find_by(username: event.attendees.last.email)
+      if field_worker
+        location = Location.find_or_create_by(address: event.location)
+        Appointment.find_or_create_by(start_time: event.start.date_time,
+          end_time: event.end.date_time,
+          field_worker_id: field_worker.id,
+          location_id: location.id,
+          description: event.summary)
+      end
     end
   end
 

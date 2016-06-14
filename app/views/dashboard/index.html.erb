@@ -10,8 +10,7 @@
     <li id="demo"></li>
   </ul>
 </div>
-
-<div id="user-menu" class="hidden">
+<div id="user-menu" class="hidden" >
   <%= render partial: "dashboard/user_create" %>
 </div>
 <div id="remove-user-menu" class="hidden" >
@@ -49,7 +48,6 @@
         type: 'GET',
         url: "http://localhost:3000/api/v1/field_workers.json",
         success: function(data) {
-          // console.log(data)
           $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Search Box">')
           returnData(data)
         },
@@ -109,7 +107,6 @@
             attachSecretMessage(marker, place.name);
           })
           if (place.geometry.viewport) {
-            // Only geocodes have viewport.
             bounds.union(place.geometry.viewport);
           } else {
             bounds.extend(place.geometry.location);
@@ -119,14 +116,13 @@
 
       var directionsService = new google.maps.DirectionsService;
       var trelora = "2401 15th st, Denver CO 80202"
-      var colors = ["red", "green", "purple", "blue"]
+      var colors = ["red", "green", "purple", "blue", "white", "orange", "yellow"]
       $.each(fieldWorkerData, function(i, fieldWorker){
 
         var name = fieldWorker.username
         var icon = fieldWorker.icon
         var appointments = fieldWorker.appointments
         var waypoints = []
-
 
         $.each(appointments, function(index, appointment){
 
@@ -154,7 +150,7 @@
 
           suppressMarkers : true,
           polylineOptions: {
-            strokeColor: colors[i - 1]
+            strokeColor: colors[i]
           }
         });
 

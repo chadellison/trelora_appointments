@@ -17,7 +17,6 @@
 }
 
 .user-fields {
-  margin-bottom: 8px;
   margin-left: 10px;
   padding-left: 5px;
   width: 200px;
@@ -31,13 +30,38 @@
 .submit-button {
   font-size: 12px;
   margin-left: 10px;
+  margin-top: 10px;
   border: none;
   background-color: #333;
   color: white;
   height: 30px;
-  width: 208px;
+  width: 210px;
   outline: none;
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#f-w-trelora-id {
+  width: 60px;
+  height: 20px;
+  padding-left: 5px;
+
+  font-size: 10px;
+  font-family: Tahoma;
+  border-style: solid;
+  color: #333;
+}
+
+#trelora-id-field {
+  margin-left: 10px;
+  margin-right: 20px;
+  float: left;
+  height: 30px;
+  width: 60px;
+}
+
+
+.f-w-info-wrapper {
+  margin-top: 10px;
 }
 
 .submit-button:hover:not(.active) {

@@ -6,7 +6,7 @@
   <div class="form-group remove">
     <ul>
       <% User.all.each do |user| %>
-        <div class="user"><li><%= user.username %></li>
+        <div class="employee"><li><%= user.username %></li>
         <li><%= button_to "Remove", api_v1_user_path(user.id), method: :delete, class: :delete, id: "#{user.id}", remote: true %></li></div>
       <% end %>
     </ul>
@@ -17,7 +17,7 @@
 <div class="form-group remove">
   <ul>
     <% FieldWorker.all.each do |field_worker| %>
-      <div class="field_worker"><li><%= field_worker.username %></li>
+      <div class="employee"><li><%= field_worker.username %></li>
       <li><%= button_to "Remove", api_v1_field_worker_path(field_worker.id), method: :delete, class: :delete, id: "#{field_worker.id}", remote: true %></li></div>
     <% end %>
   </ul>
