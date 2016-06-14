@@ -6,6 +6,8 @@ class GoogleCalendarService
   def initialize
     @calendar = Google::Apis::CalendarV3::CalendarService.new
     scopes = ["https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/plus.login"]
+    this = ENV["TRELORA_GOOGLE_KEY"]
+    File.write('./client_secrets.json', this)
     @calendar.authorization = Google::Auth.get_application_default(scopes)
   end
 
