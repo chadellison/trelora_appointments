@@ -46,14 +46,14 @@ li a:hover:not(.active) {
 }
 
 .button {
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    margin-left: 5px;
-    outline: none;
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin-left: 5px;
+  outline: none;
 }
 
 .button:active {

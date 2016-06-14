@@ -13,6 +13,13 @@ class Api::V1::UsersController < Api::ApiController
     respond_with User.find(params[:id])
   end
 
+  def destroy
+    User.find(params[:id]).destroy
+    respond_to do |format|
+      format.json { head :no_content }
+    end
+  end
+
   private
 
   def user_params

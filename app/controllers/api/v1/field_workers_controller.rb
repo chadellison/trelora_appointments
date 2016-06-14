@@ -14,6 +14,13 @@ class Api::V1::FieldWorkersController < Api::ApiController
 
   end
 
+  def destroy
+    FieldWorker.find(params[:id]).destroy
+    respond_to do |format|
+      format.json { head :no_content }
+    end
+  end
+
   private
 
   def f_w_params

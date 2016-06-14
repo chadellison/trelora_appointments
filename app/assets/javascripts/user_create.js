@@ -3,6 +3,8 @@ $(document).ready(function() {
   $('#add-user').on('click', function() {
     $('#user-menu').addClass("user-create-menu");
     $('#user-menu').removeClass("hidden");
+    $('#remove-user-menu').removeClass("remove-user-menu")
+    $('#remove-user-menu').addClass("hidden");
     $('#map').removeClass("map-width-100");
     $('#map').addClass("map-width-75");
   });
@@ -13,7 +15,6 @@ $(document).ready(function() {
     $('#map').removeClass("map-width-75");
     $('#map').addClass("map-width-100");
   });
-
 
   $("#user-submit").on('click', function(){
     var postParams = { post:
@@ -55,5 +56,4 @@ $(document).ready(function() {
       }
     })
   })
-
 });
