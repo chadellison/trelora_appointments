@@ -13,21 +13,20 @@
 <h3>Create new field worker below</h3>
 
   <hr>
-  <div class="form-group">
-    <input class="user-fields" placeholder="antonio@trelora.com" type="text" id="f-w-username">
-    <div class="this">
-      <span id="role-span">
-        <input placeholder="trelora id" type="text" id="f-w-trelora-id">
-      </span>
-      <span class="job-role-button">
-        <input type="radio" class="radio_item" value="photographer" name="transportation" id="photographer">
-        <label class="label_item" for="photographer"><%= (image_tag "camera_pictogram.png", width: "30px", height: "30px" ) %></label>
-      </span>
-      <span class="job-role-button">
-        <input type="radio" class="radio_item" value="appraiser" name="transportation" id="appraiser">
-        <label class="label_item" for="appraiser"><%= (image_tag "appraiser.jpg", width: "30px", height: "30px" ) %></label>
-      </span>
+    <div class="form-group">
+      <%= text_field_tag 'f-w-username', nil, placeholder: "antonio@trelora.com", class: "user-fields" %>
+      <div class="f-w-info-wrapper">
+        <div id="trelora-id-field">
+          <%= text_field_tag "f-w-trelora-id", nil, placeholder: "trelora id" %>
+        </div>
+        <div class="job-role-button">
+          <input type="radio" class="radio_item" value="photographer" name="role" id="photographer">
+          <label class="label_item" for="photographer"><%= (image_tag "camera_pictogram.png", width: "30px" ) %></label>
+        </div>
+        <div class="job-role-button">
+          <input type="radio" class="radio_item" value="appraiser" name="role" id="appraiser">
+          <label class="label_item" for="appraiser"><%= (image_tag "appraiser.jpg", width: "30px" ) %></label>
+        </div>
+      </div>
+      <%= submit_tag "Add a new field worker", class:"submit-button", id:"f-w-submit" %>
     </div>
-
-  </div>
-  <input class="submit-button" id="f-w-submit" type="button" name="submit" value="Add a new field worker">

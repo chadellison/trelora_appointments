@@ -26,6 +26,7 @@ $(document).ready(function() {
       dataType: "JSON",
       data: postParams,
       success: function(data){
+
       },
 
       error: function(errorBody){
@@ -36,7 +37,7 @@ $(document).ready(function() {
 
   $("#f-w-submit").on('click', function(){
     var postParams = { post:
-      { role: $("#f-w-role").val(),
+      { role: $('input[name=role]:checked').val(),
       username: $("#f-w-username").val(),
       trelora_id: $("#f-w-trelora-id").val()
       }
@@ -46,9 +47,10 @@ $(document).ready(function() {
       url: 'http://localhost:3000/api/v1/field_workers.json',
       dataType: "JSON",
       data: postParams,
-      success: alert('test'),
+      success: function(data){
+
+      },
       error: function(errorBody){
-        i = i + 1
         alert("error")
       }
     })
