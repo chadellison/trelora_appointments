@@ -18,7 +18,7 @@
   <ul>
     <% FieldWorker.all.each do |field_worker| %>
       <div class="employee"><li><%= field_worker.username %></li>
-      <li><%= button_to "Remove", api_v1_field_worker_path(field_worker.id), method: :delete, class: :delete, id: "#{field_worker.id}", remote: true %></li></div>
+      <li><%= button_to "Remove", api_v1_field_worker_path(field_worker.id), method: :update, class: :delete, id: "#{field_worker.id}", remote: true %></li></div>
     <% end %>
   </ul>
 </div>

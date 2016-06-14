@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160612025859) do
+ActiveRecord::Schema.define(version: 20160613235121) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,10 +32,11 @@ ActiveRecord::Schema.define(version: 20160612025859) do
   create_table "field_workers", force: :cascade do |t|
     t.string   "username"
     t.string   "icon"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
     t.integer  "role"
     t.integer  "trelora_id"
+    t.string   "status",     default: "active"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -69,6 +70,7 @@ ActiveRecord::Schema.define(version: 20160612025859) do
     t.string   "uid"
     t.string   "oauth_token"
     t.string   "profile"
+    t.string   "password"
   end
 
   add_foreign_key "appointments", "locations"

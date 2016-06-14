@@ -14,8 +14,8 @@ class Api::V1::FieldWorkersController < Api::ApiController
 
   end
 
-  def destroy
-    FieldWorker.find(params[:id]).destroy
+  def update
+    FieldWorker.find(params[:id]).update(status: "inactive")
     respond_to do |format|
       format.json { head :no_content }
     end
@@ -24,6 +24,6 @@ class Api::V1::FieldWorkersController < Api::ApiController
   private
 
   def f_w_params
-    params.require("post").permit(:role, :trelora_id, :username)
+    params.require("post").permit(:role, :trelora_id, :username, :status)
   end
 end
