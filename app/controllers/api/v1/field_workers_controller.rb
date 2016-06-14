@@ -24,6 +24,6 @@ class Api::V1::FieldWorkersController < Api::ApiController
   private
 
   def f_w_params
-    params.require("post").permit(:role, :trelora_id, :username)
+    params.require("post").permit(:role, :trelora_id, :username, :status)
   end
 end

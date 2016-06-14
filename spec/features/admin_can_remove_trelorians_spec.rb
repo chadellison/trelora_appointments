@@ -16,7 +16,7 @@ RSpec.feature "Admin can remove trelorians" do
 
     expect(User.count).to eq 1
 
-    within ".user" do
+    within "input##{user.id}" do
       click_on "Remove"
     end
 

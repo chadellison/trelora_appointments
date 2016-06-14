@@ -1,7 +1,5 @@
 <div class="nav">
   <ul>
-    <li class="active login"><%= link_to "Sign in with Google", google_login_path if !current_user %></li>
-    <li class="active login"><%= link_to "Logout", session_path, method: :delete if current_user %></li>
     <li id="add-user"><%= link_to "Add User", "#" %></li>
     <li id="remove-user"><%= link_to "Remove User", "#" %></li>
     <li class="photographer"><%= link_to "Photographer", "#" %></li>

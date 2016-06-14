@@ -2,6 +2,11 @@ require "rails_helper"
 
 RSpec.describe Api::V1::FieldWorkersController, type: :controller do
   before(:each) do
+
+    encoded_auth_credentials = ActionController::HttpAuthentication::Basic.encode_credentials(ENV['admin_username'], ENV['admin_password'])
+
+    request.env['HTTP_AUTHORIZATION'] = encoded_auth_credentials
+
     denver = Location.create(address: "Denver")
     boulder = Location.create(address: "Boulder")
     ft_collins = Location.create(address: "Fort Collins")
@@ -9,7 +14,7 @@ RSpec.describe Api::V1::FieldWorkersController, type: :controller do
     appointment2 = boulder.appointments.create(start_time: Date.today.to_datetime + 6.hour)
     appointment3 = ft_collins.appointments.create(start_time: Date.today.to_datetime + 1)
 
-    FieldWorker.create(username: "Jones").appointments << appointment1
+    FieldWorker.create(username: "jones").appointments << appointment1
     frank = FieldWorker.create(username: "Frank")
     frank.appointments = [appointment2, appointment3]
   end
