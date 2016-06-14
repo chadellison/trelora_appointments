@@ -3,8 +3,9 @@ class User < ActiveRecord::Base
   has_many :roles, through: :user_roles
 
   def self.from_omniauth(auth_info)
+    binding.pry
     if User.find_by(profile: auth_info["info"]["urls"]["Google"])
-      where(uid: auth_info[:uid]).update_or_create(
+      where(uid: auth_info[:uid]).update(
         uid: auth_info.uid,
         username: auth_info.info.name
       )

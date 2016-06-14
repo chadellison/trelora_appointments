@@ -26,7 +26,10 @@ $(document).ready(function() {
       url: 'http://localhost:3000/api/v1/users.json',
       dataType: "JSON",
       data: postParams,
-      success: alert("user created"),
+      success: function(data){
+
+      },
+
       error: function(errorBody){
         alert("error")
       }
@@ -35,18 +38,19 @@ $(document).ready(function() {
 
   $("#f-w-submit").on('click', function(){
     var postParams = { post:
-      { role: $("#f-w-role").val(),
+      { role: $('input[name=role]:checked').val(),
       username: $("#f-w-username").val(),
       trelora_id: $("#f-w-trelora-id").val()
       }
     }
-
     $.ajax({
       type: 'POST',
       url: 'http://localhost:3000/api/v1/field_workers.json',
       dataType: "JSON",
       data: postParams,
-      success: alert("field worker created"),
+      success: function(data){
+
+      },
       error: function(errorBody){
         alert("error")
       }
