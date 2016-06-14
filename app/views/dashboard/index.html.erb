@@ -28,7 +28,7 @@
         $.ajax({
           type: 'GET',
           data: {day: dateText},
-          url: "http://localhost:3000/api/v1/field_workers.json",
+          url: "/api/v1/field_workers.json",
           success: function(data) {
             $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Search Box">')
             returnData(data)
@@ -44,7 +44,7 @@
     if(i == 0) {
       $.ajax({
         type: 'GET',
-        url: "http://localhost:3000/api/v1/field_workers.json",
+        url: "/api/v1/field_workers.json",
         success: function(data) {
           $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Search Box">')
           returnData(data)

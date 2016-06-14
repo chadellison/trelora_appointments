@@ -23,7 +23,7 @@ $(document).ready(function() {
 
     $.ajax({
       type: 'POST',
-      url: 'http://localhost:3000/api/v1/users.json',
+      url: '/api/v1/users.json',
       dataType: "JSON",
       data: postParams,
       success: function(data){
@@ -45,7 +45,7 @@ $(document).ready(function() {
     }
     $.ajax({
       type: 'POST',
-      url: 'http://localhost:3000/api/v1/field_workers.json',
+      url: '/api/v1/field_workers.json',
       dataType: "JSON",
       data: postParams,
       success: function(data){
