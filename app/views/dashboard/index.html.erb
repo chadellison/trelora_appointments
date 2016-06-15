@@ -17,6 +17,7 @@
 
 <div id="map" class="map-width-100"></div>
 <div id="fuck"></div>
+
 <script>
 
   function initMap() {
@@ -138,7 +139,6 @@
           attachSecretMessage(marker, appointmentInfo);
         })
 
-        var icon = "https://mytrelora-production.s3.amazonaws.com/members/avatar/8/small_Anton_20_2_.png"
         var latitude = +("<%= @address.latitude %>")
         var longitude = + ("<%= @address.longitude %>")
 
