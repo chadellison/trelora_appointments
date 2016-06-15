@@ -8,6 +8,12 @@ img[src="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png"] {
     display: none;
 }
 
+.infoWindow {
+  width: 50px;
+  height: 50px;
+  color: red;
+}
+
 #map {
   position:absolute;
   height:93%;
