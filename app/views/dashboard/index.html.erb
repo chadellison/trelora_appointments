@@ -23,13 +23,12 @@
   function initMap() {
     var i = 0
     var date  = "<%= @date %>"
-    console.log(date)
     if (date) {
       getDate(date)
     } else if (i === 0) {
       getDate()
     }
-
+    var todaysFWs = ""
     function getDate(date) {
       $.ajax({
         type: 'GET',
@@ -39,6 +38,7 @@
         success: function(data) {
           $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Address">')
           returnData(data)
+          todaysFWs = data
           i = i + 1
         },
         error: function(errorBody){
@@ -77,38 +77,80 @@
 
         if (places.length == 0) {
           return;
+        } else if (places.length == 1 ) {
+
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+
+
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+
+            markers.push(new google.maps.Marker({
+              map: map,
+              title: place.name,
+              position: place.geometry.location
+            }));
+
+
+
+            $.each(markers, function(i,marker){
+              length = markers.length
+              if(i + 1 == length) {
+
+                var appointmentIds = []
+                $.each(fieldWorkerData, function(i, fieldWorker){
+                  $.each(fieldWorker.appointments, function(i, appointment){
+                      appointmentIds.push(appointment.info.id)
+                  })
+                })
+
+                bestDay()
+                function bestDay(){
+                  $.ajax({
+                    type: 'GET',
+                    url: "/api/v1/best_appointment.json?markerAddress=" + place.name + "&appointments=" + appointmentIds,
+                    success: function(data) {
+                      addData(data)
+                    },
+                    error: function(errorBody){
+                      alert("error")
+                    }
+                  })
+                }
+
+                function addData(data) {
+
+                  var latitude = data.location.latitude
+                  var longitude = data.location.longitude
+                  $(document).ready(function() {
+                    var newMarker = new google.maps.Marker({
+                      position: {lat: latitude, lng: longitude },
+                      map: map
+                    });
+                    secretMessage = "Closest Appointment"
+                    address = "Closest Appointment!"
+                    closeOthers = true
+                    attachSecretMessage(newMarker, secretMessage, address, closeOthers);
+                  })
+                  secretMessage = place.name + "<br />" + "closest appointment by drive time: " + data.location.address
+                  address = place.name + "<br />" + "closest appointment by drive time: " + data.location.address
+                  attachSecretMessage(marker, secretMessage, address);
+
+                }
+              }
+            })
+
+            if (place.geometry.viewport) {
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+        } else {
+          alert("be more specific")
         }
-
-        markers.forEach(function(marker) {
-          marker.setMap(null);
-        });
-
-        var bounds = new google.maps.LatLngBounds();
-        places.forEach(function(place) {
-          var icon = {
-            url: place.icon,
-            size: new google.maps.Size(71, 71),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(17, 34),
-            scaledSize: new google.maps.Size(25, 25)
-          };
-
-          // Create a marker for each place.
-          markers.push(new google.maps.Marker({
-            map: map,
-            icon: icon,
-            title: place.name,
-            position: place.geometry.location
-          }));
-          $.each(markers, function(i,marker){
-            attachSecretMessage(marker, place.name);
-          })
-          if (place.geometry.viewport) {
-            bounds.union(place.geometry.viewport);
-          } else {
-            bounds.extend(place.geometry.location);
-          }
-        });
       });
 
       var directionsService = new google.maps.DirectionsService;
@@ -136,17 +178,23 @@
             map: map
           });
 
-          attachSecretMessage(marker, appointmentInfo);
+          address =  appointment.location.address
+          attachSecretMessage(marker, appointmentInfo, address);
         })
+
 
         var latitude = +("<%= @address.latitude %>")
         var longitude = + ("<%= @address.longitude %>")
+        if(latitude != 0) {
+          var marker = new google.maps.Marker({
+            position: {lat: latitude, lng: longitude },
+            map: map
+          });
+          var address = "<%= @address.address %>"
+          var distance
+          attachSecretMessage(marker, locationInfo, address)
+        }
 
-        var marker = new google.maps.Marker({
-          position: {lat: latitude, lng: longitude },
-          icon: icon,
-          map: map
-        });
 
 
         length = appointments.length
@@ -180,20 +228,35 @@
       });
     }
   }
+  function attachSecretMessage(marker, secretMessage, address, closeOthers) {
 
-  function attachSecretMessage(marker, secretMessage) {
     var infowindow = new google.maps.InfoWindow({
       content: secretMessage
     });
 
-    marker.addListener('mouseover', function() {
+    var infowindow1 = new google.maps.InfoWindow({
+      content: address,
+    });
+
+
+    infowindow1.open(marker.get('map'), marker)
+    // "<div>"
+    marker.addListener('click', function() {
 
       infowindow.open(marker.get('map'), marker);
 
     });
     marker.addListener('mouseout', function() {
       infowindow.close(marker.get('map'), marker);
-    });
+    })
+
+    marker.addListener('click', function() {
+      infowindow1.close(marker.get('map'), marker);
+    })
+
+    marker.addListener('mouseout', function() {
+      infowindow1.open(marker.get('map'), marker);
+    })
 
   }
 
