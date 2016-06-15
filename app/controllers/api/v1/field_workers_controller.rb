@@ -11,7 +11,6 @@ class Api::V1::FieldWorkersController < Api::ApiController
     else
       respond_with JSON.generate({"error" => "sorry try again" })
     end
-
   end
 
   def update
