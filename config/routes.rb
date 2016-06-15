@@ -7,6 +7,8 @@ Rails.application.routes.draw do
       resources :field_workers, only: [:index, :create, :update]
       resources :photographers, only: [:index]
       resources :appraisers, only: [:index]
+
+      get "/best_appointment", to: "appointments#best_appointment"
     end
   end
 end

@@ -10,4 +10,11 @@ class Appointment < ActiveRecord::Base
   def self.end_time
     23.hour + 59.minute + 59.second
   end
+
+  def self.best_appointment(params)
+    appointments = Appointment.where(id: params[:appointments].split(","))
+    appointments.sort_by do |appointment|
+      time = GoogleDistanceMatrix.new.time(appointment.location.address, params[:markerAddress])
+    end.first
+  end
 end
