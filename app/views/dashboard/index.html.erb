@@ -22,6 +22,7 @@
   function initMap() {
     var i = 0
     var date  = "<%= @date %>"
+    console.log(date)
     if (date) {
       getDate(date)
     } else if (i === 0) {
@@ -136,6 +137,17 @@
 
           attachSecretMessage(marker, appointmentInfo);
         })
+
+        var icon = "https://mytrelora-production.s3.amazonaws.com/members/avatar/8/small_Anton_20_2_.png"
+        var latitude = +("<%= @address.latitude %>")
+        var longitude = + ("<%= @address.longitude %>")
+
+        var marker = new google.maps.Marker({
+          position: {lat: latitude, lng: longitude },
+          icon: icon,
+          map: map
+        });
+
 
         length = appointments.length
         var directionsDisplay = new google.maps.DirectionsRenderer({
