@@ -23,18 +23,20 @@
   function initMap() {
     var i = 0
     var date  = "<%= @date %>"
-    console.log(date)
     if (date) {
       getDate(date)
     } else if (i === 0) {
       getDate()
     }
-
     function getDate(date) {
+      var role = "field_workers"
+      if ("<%= @role %>") {
+        var role = "<%= @role %>"
+      }
       $.ajax({
         type: 'GET',
         data: {day: date},
-        url: "/api/v1/field_workers.json",
+        url: "/api/v1/" + role + ".json",
 
         success: function(data) {
           $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Address">')
