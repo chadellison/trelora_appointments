@@ -2,8 +2,8 @@
   <ul>
     <li id="add-user"><%= link_to "Add User", "#" %></li>
     <li id="remove-user"><%= link_to "Remove User", "#" %></li>
-    <li class="photographer"><%= link_to "Photographer", "#" %></li>
-    <li class="appraiser"><%= link_to "Appraiser", "#" %></li>
+    <li class="field_workers"><%= link_to "Photographer", "#" %></li>
+    <li class="field_workers"><%= link_to "Appraiser", "#" %></li>
     <li class="datepicker">Date <input type="text" id="datepicker"></li>
     <li id="demo"></li>
   </ul>
@@ -31,25 +31,43 @@
 
     var todaysFWs = ""
     function getDate(date) {
-      var role = "field_workers"
-      if ("<%= @role %>") {
-        var role = "<%= @role %>"
-      }
-      $.ajax({
-        type: 'GET',
-        data: {day: date},
-        url: "/api/v1/" + role + ".json",
+      var sendPhotographer = function(role) {
+        $.ajax({
+          type: 'GET',
+          data: {day: date},
+          url: "/api/v1/" + role + ".json",
 
-        success: function(data) {
-          $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Address">')
-          returnData(data)
-          todaysFWs = data
-          i = i + 1
-        },
-        error: function(errorBody){
-          alert("error")
+          success: function(data) {
+            $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Address">')
+            returnData(data)
+            todaysFWs = data
+            i = i + 1
+          },
+          error: function(errorBody){
+            alert("error")
+          }
+        })
+      }
+      var role = "field_workers";
+      if ("<%= @role %>" !== "") {
+        role = "<%= @role %>";
+      }
+      sendPhotographer(role)
+
+
+      //add an event listener for buttons
+
+      $(".field_workers").on("click", function(){
+        var buttonText = $(this).find("a").text()
+        if (buttonText === "Photographer") {
+          var role = "photographers"
+        } else if (buttonText === "Appraiser") {
+          var role = "appraisers"
         }
-      })
+
+        sendPhotographer(role)
+      });
+
     }
 
     $('#datepicker').datepicker({
