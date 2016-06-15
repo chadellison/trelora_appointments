@@ -21,11 +21,11 @@
 <script>
 
   function initMap() {
-    var i = 0
+    // var i = 0
     var date  = "<%= @date %>"
     if (date) {
       getDate(date)
-    } else if (i === 0) {
+    } else {
       getDate()
     }
     var todaysFWs = ""
@@ -39,7 +39,7 @@
           $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Address">')
           returnData(data)
           todaysFWs = data
-          i = i + 1
+          // i = i + 1
         },
         error: function(errorBody){
           alert("error")
@@ -54,7 +54,7 @@
     });
 
     function returnData(data){
-      fieldWorkerData = data
+      var fieldWorkerData = data
 
       var map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.753, lng: -104.9775},
@@ -75,9 +75,9 @@
       searchBox.addListener('places_changed', function() {
         var places = searchBox.getPlaces();
 
-        if (places.length == 0) {
+        if (places.length === 0) {
           return;
-        } else if (places.length == 1 ) {
+        } else if (places.length === 1 ) {
 
           markers.forEach(function(marker) {
             marker.setMap(null);
@@ -85,69 +85,59 @@
 
 
           var bounds = new google.maps.LatLngBounds();
-          places.forEach(function(place) {
+          var place = places[0];
 
-            markers.push(new google.maps.Marker({
-              map: map,
-              title: place.name,
-              position: place.geometry.location
-            }));
+          markers.push(new google.maps.Marker({
+            map: map,
+            title: place.name,
+            position: place.geometry.location
+          }));
 
 
+          var marker = markers[markers.length -1]
 
-            $.each(markers, function(i,marker){
-              length = markers.length
-              if(i + 1 == length) {
-
-                var appointmentIds = []
-                $.each(fieldWorkerData, function(i, fieldWorker){
-                  $.each(fieldWorker.appointments, function(i, appointment){
-                      appointmentIds.push(appointment.info.id)
-                  })
-                })
-
-                bestDay()
-                function bestDay(){
-                  $.ajax({
-                    type: 'GET',
-                    url: "/api/v1/best_appointment.json?markerAddress=" + place.name + "&appointments=" + appointmentIds,
-                    success: function(data) {
-                      addData(data)
-                    },
-                    error: function(errorBody){
-                      alert("error")
-                    }
-                  })
-                }
-
-                function addData(data) {
-
-                  var latitude = data.location.latitude
-                  var longitude = data.location.longitude
-                  $(document).ready(function() {
-                    var newMarker = new google.maps.Marker({
-                      position: {lat: latitude, lng: longitude },
-                      map: map
-                    });
-                    secretMessage = "Closest Appointment"
-                    address = "Closest Appointment!"
-                    closeOthers = true
-                    attachSecretMessage(newMarker, secretMessage, address, closeOthers);
-                  })
-                  secretMessage = place.name + "<br />" + "closest appointment by drive time: " + data.location.address
-                  address = place.name + "<br />" + "closest appointment by drive time: " + data.location.address
-                  attachSecretMessage(marker, secretMessage, address);
-
-                }
-              }
+          var appointmentIds = []
+          $.each(fieldWorkerData, function(i, fieldWorker){
+            $.each(fieldWorker.appointments, function(i, appointment){
+                appointmentIds.push(appointment.info.id)
             })
+          })
 
-            if (place.geometry.viewport) {
-              bounds.union(place.geometry.viewport);
-            } else {
-              bounds.extend(place.geometry.location);
+          $.ajax({
+            type: 'GET',
+            url: "/api/v1/best_appointment.json?markerAddress=" + place.name + "&appointments=" + appointmentIds,
+            success: function(data) {
+              addData(data)
+            },
+            error: function(errorBody){
+              alert("error")
             }
-          });
+          })
+
+          function addData(data) {
+
+            var latitude = data.location.latitude
+            var longitude = data.location.longitude
+            var newMarker = new google.maps.Marker({
+              position: {lat: latitude, lng: longitude },
+              map: map
+            });
+
+            secretMessage = "Closest Appointment"
+            address = "Closest Appointment!"
+            closeOthers = true
+            attachSecretMessage(newMarker, secretMessage, address);
+            secretMessage = place.name + "<br />" + "closest appointment by drive time: " + data.location.address
+            address = place.name + "<br />" + "closest appointment by drive time: " + data.location.address
+            attachSecretMessage(marker, secretMessage, address);
+
+          }
+
+          if (place.geometry.viewport) {
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
         } else {
           alert("be more specific")
         }
@@ -182,7 +172,8 @@
           attachSecretMessage(marker, appointmentInfo, address);
         })
 
-
+        // When you pass an address param through url
+        // this marker defines it
         var latitude = +("<%= @address.latitude %>")
         var longitude = + ("<%= @address.longitude %>")
         if(latitude != 0) {
@@ -191,8 +182,9 @@
             map: map
           });
           var address = "<%= @address.address %>"
+
           var distance
-          attachSecretMessage(marker, locationInfo, address)
+          attachSecretMessage(marker, address, address)
         }
 
 
@@ -228,7 +220,8 @@
       });
     }
   }
-  function attachSecretMessage(marker, secretMessage, address, closeOthers) {
+
+  function attachSecretMessage(marker, secretMessage, address) {
 
     var infowindow = new google.maps.InfoWindow({
       content: secretMessage
@@ -240,7 +233,6 @@
 
 
     infowindow1.open(marker.get('map'), marker)
-    // "<div>"
     marker.addListener('click', function() {
 
       infowindow.open(marker.get('map'), marker);
