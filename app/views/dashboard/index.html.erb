@@ -32,7 +32,8 @@
       $.ajax({
         type: 'GET',
         data: {day: date},
-        url: "http://localhost:3000/api/v1/field_workers.json",
+        url: "/api/v1/field_workers.json",
+
         success: function(data) {
           $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Address">')
           returnData(data)
