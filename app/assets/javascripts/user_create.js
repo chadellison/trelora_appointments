@@ -17,7 +17,7 @@ $(document).ready(function() {
   });
 
   $("#user-submit").on('click', function(){
-    var postParams = { post:
+    var postParams = { field_worker:
       { profile: $("#user-profile").val() }
     }
 
@@ -37,7 +37,7 @@ $(document).ready(function() {
   })
 
   $("#f-w-submit").on('click', function(){
-    var postParams = { post:
+    var postParams = { field_worker:
       { role: $('input[name=role]:checked').val(),
       username: $("#f-w-username").val(),
       trelora_id: $("#f-w-trelora-id").val()
