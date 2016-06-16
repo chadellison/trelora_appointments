@@ -12,7 +12,6 @@ class Api::V1::AppointmentsController < Api::ApiController
     if appointment
       locations = [location,appointment,appointment.field_worker, appointment.location]
     else
-      # binding.pry
       locations = [location]
     end
     respond_with locations
