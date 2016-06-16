@@ -103,7 +103,6 @@
     } else {
       var role = getParameterByName('role')
     }
-
     $.ajax({
       type: 'GET',
       url: "/api/v1/url_best_day.json?markerAddress=" + location + "&date=" + date + "&role=" + role,
@@ -252,12 +251,13 @@
       selection = getParameterByName('role');
     }
 
+    // get list of field workers
+    getFieldWorkers(date);
+
     if (getParameterByName('address') !== null ) {
       // find the best worker
       UrlBestDay(getParameterByName('address'),date)
     }
-    // get list of field workers
-    getFieldWorkers(date);
 
     //If the url has an address
       //Add the marker...
