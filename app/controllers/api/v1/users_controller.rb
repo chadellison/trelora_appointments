@@ -2,11 +2,8 @@ class Api::V1::UsersController < Api::ApiController
   respond_to :json
 
   def create
-    if user = User.create(user_params["post"])
-      redirect_to api_v1_user_path(user.id)
-    else
-      respond_with JSON.generate({"error" => "sorry try again" })
-    end
+    user = User.create(user_params)
+    respond_with user, location: nil
   end
 
   def show
@@ -14,15 +11,12 @@ class Api::V1::UsersController < Api::ApiController
   end
 
   def destroy
-    User.find(params[:id]).destroy
-    respond_to do |format|
-      format.json { head :no_content }
-    end
+    respond_with User.find(params[:id]).destroy, location: nil
   end
 
   private
 
   def user_params
-    params.permit( "post" => "profile")
+    params.require(:user).permit(:username, :role, :token, :password, :id)
   end
 end
