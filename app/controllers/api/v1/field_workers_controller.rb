@@ -6,8 +6,7 @@ class Api::V1::FieldWorkersController < Api::ApiController
   end
 
   def create
-    FieldWorker.create_f_w(f_w_params)
-    redirect_to api_v1_field_workers_path
+    respond_with FieldWorker.create_f_w(f_w_params), location: nil
   end
 
   def update
@@ -20,6 +19,6 @@ class Api::V1::FieldWorkersController < Api::ApiController
   private
 
   def f_w_params
-    params.require("post").permit(:role, :trelora_id, :username, :status)
+    params.require(:field_worker).permit(:role, :trelora_id, :username, :status)
   end
 end

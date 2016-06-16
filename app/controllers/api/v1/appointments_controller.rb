@@ -5,5 +5,4 @@ class Api::V1::AppointmentsController < Api::ApiController
     appointment = Appointment.best_appointment(params)
     respond_with appointment
   end
-
 end
