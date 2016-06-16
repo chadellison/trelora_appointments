@@ -24,27 +24,4 @@ class GoogleCalendarService
       end
     end
   end
-
-  def create_event(event)
-    calendar.insert_event("primary", event(event))
-  end
-
-  def event(hash)
-    event = Google::Apis::CalendarV3::Event.new({
-      summary: hash[:summary],
-      location: hash[:location],
-      description: hash[:description],
-      start: {
-        date_time: hash[:start_time],
-        time_zone: 'America/Denver',
-      },
-      end: {
-        date_time: hash[:end_time],
-        time_zone: 'America/Denver',
-      },
-      attendees: [
-        {email: hash[:email]}
-      ]
-    })
-  end
 end
