@@ -4,7 +4,7 @@ RSpec.feature "Admin can remove trelorians" do
 
   VCR.use_cassette("admin can remove trelorians") do
     scenario "Admin no longer sees removed trelorians" do
-      user = User.create(username: "jones", password: "123")
+      user = User.create(username: "jones", password: "123", role: 1)
 
       basic_auth!
 
@@ -27,7 +27,7 @@ RSpec.feature "Admin can remove trelorians" do
     end
 
     scenario "Admin removes field_worker" do
-      user = User.create(username: "jones", password: "123")
+      user = User.create(username: "jones", password: "123", role: 1)
 
       basic_auth!
 
