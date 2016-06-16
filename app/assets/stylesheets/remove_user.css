@@ -17,12 +17,16 @@
   margin-right: 20px;
 }
 
-.remove ul {
+.employee ul {
   padding: 10px;
   background-color: white;
 }
 
-.remove li {
+.form-group ul {
+  background-color: white;
+}
+
+.employee li {
   padding: 8px;
   background-color: white;
 }
@@ -42,4 +46,16 @@
 
 .delete:active {
   transform: translateY(2px);
+}
+
+.form-group {
+  background-color: white;
+}
+
+td {
+  padding: 10px
+}
+
+table {
+  width: 80%;
 }
