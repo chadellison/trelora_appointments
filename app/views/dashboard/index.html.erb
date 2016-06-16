@@ -118,6 +118,13 @@
     return today = mm+'/'+dd+'/'+yyyy;
   }
 
+  function formatAppointmentTime(time){
+    var today = new Date(time);
+    var h = today.getHours()
+    return today = h + " " + "oclock"
+  }
+
+
   function UrlBestDay(location,date) {
     if (getParameterByName('role') === null) {
       var role = "undefined"
@@ -135,7 +142,6 @@
         if (typeof data[1] !== "undefined") {
           // highlight appointment that is closest by drive time to searched address
           var closest_appointment = addMarker({ lat: data[3].latitude, lng: data[3].longitude }, data[2].icon);
-          // addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
           attachLocMessage(closest_appointment,"Closest Spot",data[3].address)
         }
       },
@@ -168,8 +174,11 @@
         // add their appointment locations to waypoints variable
         waypoints.push({location: appointment.location.address});
         // add marker at location
+        var startTime = formatAppointmentTime(appointment.info.start_time)
+        var endTime = formatAppointmentTime(appointment.info.end_time)
         var marker = addMarker({ lat: appointment.location.latitude, lng: appointment.location.longitude }, fieldWorker.icon);
-        var message = appointment.info.start_time + "<br />" + appointment.info.end_time
+        var message = fieldWorker.username + "<br />" + startTime + "<br />" + endTime +
+                      "<br />" + appointment.location.address
         attachMessage(marker,message,appointment.location.address)
       });
       // pass through waypoints to display directions function
@@ -261,7 +270,6 @@
       }
     })
   }
-
 
   // add searched address marker to map
   function getParameterByName(name) {
