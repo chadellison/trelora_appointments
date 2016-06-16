@@ -2,8 +2,8 @@
   <ul>
     <li id="add-user"><%= link_to "Add User", "#" %></li>
     <li id="remove-user"><%= link_to "Remove User", "#" %></li>
-    <li class="photographer"><%= link_to "Photographer", "#" %></li>
-    <li class="appraiser"><%= link_to "Appraiser", "#" %></li>
+    <li class="field_workers"><%= link_to "Photographer", "#" %></li>
+    <li class="field_workers"><%= link_to "Appraiser", "#" %></li>
     <li class="datepicker">Date <input type="text" id="datepicker"></li>
     <li id="demo"></li>
   </ul>
@@ -16,195 +16,88 @@
 </div>
 
 <div id="map" class="map-width-100"></div>
-<div id="fuck"></div>
+<div id="addressBar"><input id="pac-input" class="controls" type="text" placeholder="Address"></div>
 
 <script>
+  // draw base map
+  var selection = 'field_workers';
+  var map;
+  function drawBaseMap() {
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
 
-  function initMap() {
-    // var i = 0
-    var date  = "<%= @date %>"
-    if (date) {
-      getDate(date)
-    } else {
-      getDate()
-    }
-    var todaysFWs = ""
-    function getDate(date) {
-      $.ajax({
-        type: 'GET',
-        data: {day: date},
-        url: "/api/v1/field_workers.json",
-
-        success: function(data) {
-          $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Address">')
-          returnData(data)
-          todaysFWs = data
-          // i = i + 1
-        },
-        error: function(errorBody){
-          alert("error")
-        }
-      })
-    }
-
-    $('#datepicker').datepicker({
-      onSelect: function(dateText, inst) {
-        getDate(dateText)
-      }
+    // render map
+    $('#map').html('');
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 39.753, lng: -104.9775},
+      zoom: 10
     });
 
-    function returnData(data){
-      var fieldWorkerData = data
+    // render search bar
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-      var map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 39.753, lng: -104.9775},
-        zoom: 10
+    // map.addListener('bounds_changed', function() {
+    //   searchBox.setBounds(map.getBounds());
+    // });
+
+  }
+
+  // get list of field workers
+  function getFieldWorkers(date) {
+    // get list of field workers and their appointments
+
+    $.ajax({
+      type: 'GET',
+      data: {day: date},
+      url: '/api/v1/' + selection + '.json',
+      success: function(data) {
+        // add routes to map
+        addRoutes(data)
+      },
+      error: function(errorBody){
+        alert('error');
+      }
+    });
+  }
+
+  // add marker to map
+  function addMarker(position,icon) {
+    // console.log(position)
+    new google.maps.Marker({
+      map: map,
+      position: position,
+      icon: icon,
+      // title: place.name,
+    });
+  }
+
+  // put routes on map
+  function addRoutes(fieldWorkers) {
+    drawBaseMap();
+    var directionsService = new google.maps.DirectionsService;
+    var colors = ['red', 'green', 'purple', 'blue', 'white', 'orange', 'yellow'];
+    var trelora = "2401 15th st, Denver CO 80202";
+    // iterate through each field workers
+    fieldWorkers.forEach(function(fieldWorker, index){
+      // instantiate waypoints var
+      var waypoints = [];
+      // iterate through each appointment
+      fieldWorker.appointments.forEach(function(appointment){
+        // add their appointment locations to waypoints variable
+        waypoints.push({location: appointment.location.address});
+        // add marker at location
+        addMarker({ lat: appointment.location.latitude, lng: appointment.location.longitude }, fieldWorker.icon);
       });
-
-      var input = document.getElementById('pac-input');
-
-      var searchBox = new google.maps.places.SearchBox(input);
-      map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-      map.addListener('bounds_changed', function() {
-        searchBox.setBounds(map.getBounds());
-      });
-
-
-      var markers = [];
-
-      searchBox.addListener('places_changed', function() {
-        var places = searchBox.getPlaces();
-
-        if (places.length === 0) {
-          return;
-        } else if (places.length === 1 ) {
-
-          markers.forEach(function(marker) {
-            marker.setMap(null);
-          });
-
-
-          var bounds = new google.maps.LatLngBounds();
-          var place = places[0];
-
-          markers.push(new google.maps.Marker({
-            map: map,
-            title: place.name,
-            position: place.geometry.location
-          }));
-
-
-          var marker = markers[markers.length -1]
-
-          var appointmentIds = []
-          $.each(fieldWorkerData, function(i, fieldWorker){
-            $.each(fieldWorker.appointments, function(i, appointment){
-                appointmentIds.push(appointment.info.id)
-            })
-          })
-
-          $.ajax({
-            type: 'GET',
-            url: "/api/v1/best_appointment.json?markerAddress=" + place.name + "&appointments=" + appointmentIds,
-            success: function(data) {
-              addData(data)
-            },
-            error: function(errorBody){
-              alert("error")
-            }
-          })
-
-          function addData(data) {
-
-            var latitude = data.location.latitude
-            var longitude = data.location.longitude
-            var newMarker = new google.maps.Marker({
-              position: {lat: latitude, lng: longitude },
-              map: map
-            });
-
-            secretMessage = "Closest Appointment"
-            address = "Closest Appointment!"
-            closeOthers = true
-            attachSecretMessage(newMarker, secretMessage, address);
-            secretMessage = place.name + "<br />" + "closest appointment by drive time: " + data.location.address
-            address = place.name + "<br />" + "closest appointment by drive time: " + data.location.address
-            attachSecretMessage(marker, secretMessage, address);
-
-          }
-
-          if (place.geometry.viewport) {
-            bounds.union(place.geometry.viewport);
-          } else {
-            bounds.extend(place.geometry.location);
-          }
-        } else {
-          alert("be more specific")
+      // pass through waypoints to display directions function
+      var directionsDisplay = new google.maps.DirectionsRenderer({
+        map: map,
+        suppressMarkers: true,
+        polylineOptions: {
+          strokeColor: colors[index]
         }
       });
 
-      var directionsService = new google.maps.DirectionsService;
-      var trelora = "2401 15th st, Denver CO 80202"
-      var colors = ["red", "green", "purple", "blue", "white", "orange", "yellow"]
-      $.each(fieldWorkerData, function(i, fieldWorker){
-
-        var name = fieldWorker.username
-        var icon = fieldWorker.icon
-        var appointments = fieldWorker.appointments
-        var waypoints = []
-
-        $.each(appointments, function(index, appointment){
-          waypoints.push({location: appointment.location.address})
-
-          var appointmentInfo = name + "<br />" +
-          appointment.location.address + "</br>" +
-          "start time: " + appointment.info.start_time + "</br>" +
-          "end time: " + appointment.info.end_time + "</br>" +
-          appointment.info.description
-
-          var marker = new google.maps.Marker({
-            position: {lat: appointment.location.latitude, lng: appointment.location.longitude},
-            icon: icon,
-            map: map
-          });
-
-          address =  appointment.location.address
-          attachSecretMessage(marker, appointmentInfo, address);
-        })
-
-        // When you pass an address param through url
-        // this marker defines it
-        var latitude = +("<%= @address.latitude %>")
-        var longitude = + ("<%= @address.longitude %>")
-        if(latitude != 0) {
-          var marker = new google.maps.Marker({
-            position: {lat: latitude, lng: longitude },
-            map: map
-          });
-          var address = "<%= @address.address %>"
-
-          var distance
-          attachSecretMessage(marker, address, address)
-        }
-
-
-
-        length = appointments.length
-        var directionsDisplay = new google.maps.DirectionsRenderer({
-          map: map,
-
-          suppressMarkers : true,
-          polylineOptions: {
-            strokeColor: colors[i]
-          }
-        });
-
-        displayRoute(trelora, waypoints, directionsService,directionsDisplay);
-      })
-    }
-
-    function displayRoute(trelora, waypoints, service, display) {
-      service.route({
+      directionsService.route({
         origin: trelora,
         destination: trelora,
         waypoints: waypoints,
@@ -212,48 +105,332 @@
         avoidTolls: true
       }, function(response, status) {
         if (status === google.maps.DirectionsStatus.OK) {
-          display.setOptions({ preserveViewport: true });
-          display.setDirections(response);
+          directionsDisplay.setOptions({ preserveViewport: true });
+          directionsDisplay.setDirections(response);
         } else {
           alert('Could not display directions due to: ' + status);
         }
       });
+
+
+    });
+  }
+
+  // add event listeners
+  function addListeners() {
+    $('#datepicker').datepicker({
+      onSelect: function(dateText, inst) {
+        getFieldWorkers(dateText);
+        //Update the url & Update the browser history
+        window.history.pushState("object or string", "Title", "/new-url");
+      }
+    });
+
+    //Search box listener
+      //Add marker...
+      //Update the url
+      //Update the browser history
+  }
+
+
+  // add searched address marker to map
+
+  // highlight appointment that is closest by drive time to searched address
+
+  function getParameterByName(name) {
+    var url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+
+  function initMap() {
+    // render base map
+    drawBaseMap();
+
+    // Set default date
+    var date;
+    // if url contains date
+    if (getParameterByName('date') !== null ) {
+      // override the date
+      date = getParameterByName('date');
     }
-  }
 
-  function attachSecretMessage(marker, secretMessage, address) {
+    // if url contains selection
+    if (getParameterByName('role') !== null ) {
+      // override the selection
+      selection = getParameterByName('role');
+    }
 
-    var infowindow = new google.maps.InfoWindow({
-      content: secretMessage
-    });
+    // get list of field workers
+    getFieldWorkers(date);
 
-    var infowindow1 = new google.maps.InfoWindow({
-      content: address,
-    });
+    //If the url has an address
+      //Add the marker...
 
-
-    infowindow1.open(marker.get('map'), marker)
-    marker.addListener('click', function() {
-
-      infowindow.open(marker.get('map'), marker);
-
-    });
-    marker.addListener('mouseout', function() {
-      infowindow.close(marker.get('map'), marker);
-    })
-
-    marker.addListener('click', function() {
-      infowindow1.close(marker.get('map'), marker);
-    })
-
-    marker.addListener('mouseout', function() {
-      infowindow1.open(marker.get('map'), marker);
-    })
+    addListeners();
 
   }
 
+
+//   function initMap() {
+//     var date  = "<%= @date %>"
+//     if (date) {
+//       getDate(date)
+//     } else {
+//       getDate()
+//     }
+//
+//     var todaysFWs = ""
+//     function getDate(date) {
+//       fieldWorkerType = function(role) {
+//         $.ajax({
+//           type: 'GET',
+//           data: {day: date},
+//           url: "/api/v1/" + role + ".json",
+//
+//           success: function(data) {
+//             $('#fuck').append('<input id="pac-input" class="controls" type="text" placeholder="Address">')
+//             returnData(data)
+//             todaysFWs = data
+//           },
+//           error: function(errorBody){
+//             alert("error")
+//           }
+//         })
+//       }
+//       var role = "field_workers";
+//       if ("<%= @role %>" !== "") {
+//         role = "<%= @role %>";
+//       }
+//       fieldWorkerType(role)
+//
+//
+//       //add an event listener for buttons
+//       $(".field_workers").on("click", function(){
+//         var buttonText = $(this).find("a").text()
+//         if (buttonText === "Photographer") {
+//           var role = "photographers"
+//         } else if (buttonText === "Appraiser") {
+//           var role = "appraisers"
+//         }
+//
+//         fieldWorkerType(role)
+//       });
+//
+//     }
+//
+//     $('#datepicker').datepicker({
+//       onSelect: function(dateText, inst) {
+//         getDate(dateText)
+//       }
+//     });
+//
+//     function returnData(data){
+//       var fieldWorkerData = data
+//
+//       var map = new google.maps.Map(document.getElementById('map'), {
+//         center: {lat: 39.753, lng: -104.9775},
+//         zoom: 10
+//       });
+//
+//       var input = document.getElementById('pac-input');
+//
+//       var searchBox = new google.maps.places.SearchBox(input);
+//       map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+//       map.addListener('bounds_changed', function() {
+//         searchBox.setBounds(map.getBounds());
+//       });
+//
+//
+//       var markers = [];
+//
+//       searchBox.addListener('places_changed', function() {
+//         var places = searchBox.getPlaces();
+//
+//         if (places.length === 0) {
+//           return;
+//         } else if (places.length > 1 ) {
+//           alert("be more specific");
+//           return;
+//         }
+//
+//         markers.forEach(function(marker) {
+//           marker.setMap(null);
+//         });
+//
+//         var bounds = new google.maps.LatLngBounds();
+//         var place = places[0];
+//
+//         new google.maps.Marker({
+//           map: map,
+//           title: place.name,
+//           position: place.geometry.location
+//         });
+//
+//
+//         var marker = markers[markers.length -1]
+//
+//         var appointmentIds = []
+//         $.each(fieldWorkerData, function(i, fieldWorker){
+//           $.each(fieldWorker.appointments, function(i, appointment){
+//               appointmentIds.push(appointment.info.id)
+//           })
+//         })
+//
+//         $.ajax({
+//           type: 'GET',
+//           url: "/api/v1/best_appointment.json?markerAddress=" + place.name + "&appointments=" + appointmentIds,
+//           success: function(data) {
+//             addData(data)
+//           },
+//           error: function(errorBody){
+//             alert("error")
+//           }
+//         })
+//
+//         function addData(data) {
+//
+//           var latitude = data.location.latitude
+//           var longitude = data.location.longitude
+//           var newMarker = new google.maps.Marker({
+//             position: {lat: latitude, lng: longitude },
+//             map: map
+//           });
+//
+//           secretMessage = "Closest Appointment"
+//           address = "Closest Appointment!"
+//           attachSecretMessage(newMarker, secretMessage, address);
+//           secretMessage = place.name + "<br />" + "closest appointment by drive time: " + data.location.address
+//           address = place.name + "<br />" + "closest appointment by drive time: " + data.location.address
+//           attachSecretMessage(marker, secretMessage, address);
+//
+//         }
+//
+//         if (place.geometry.hasOwnProperty("viewport")) {
+//
+//           bounds.union(place.geometry.viewport);
+//         } else {
+//           bounds.extend(place.geometry.location);
+//         }
+//       });
+//
+//       var directionsService = new google.maps.DirectionsService;
+//       var trelora = "2401 15th st, Denver CO 80202"
+//       var colors = ["red", "green", "purple", "blue", "white", "orange", "yellow"]
+//       $.each(fieldWorkerData, function(i, fieldWorker){
+//         var name = fieldWorker.username
+//         var icon = fieldWorker.icon
+//         var appointments = fieldWorker.appointments
+//         var waypoints = []
+//
+//         $.each(appointments, function(index, appointment){
+//           waypoints.push({location: appointment.location.address});
+//
+//           var appointmentInfo = name + "<br />" +
+//           appointment.location.address + "</br>" +
+//           "start time: " + appointment.info.start_time + "</br>" +
+//           "end time: " + appointment.info.end_time + "</br>" +
+//           appointment.info.description
+//
+//           var marker = new google.maps.Marker([{
+//             position: {lat: appointment.location.latitude, lng: appointment.location.longitude},
+//             icon: icon,
+//             map: map
+//           },
+//           {
+//             position: {lat: appointment.location.latitude + 1, lng: appointment.location.longitude},
+//             icon: icon,
+//             map: map
+//           }]);
+//
+//           var address =  appointment.location.address
+//           attachSecretMessage(marker, appointmentInfo, address);
+//         })
+//
+//         // When you pass an address param through url
+//         // this marker defines it
+//         var latitude = parseFloat("<%= @address.latitude %>")
+//         var longitude = parseFloat("<%= @address.longitude %>")
+//         if(latitude !== 0) {
+//           var marker = new google.maps.Marker({
+//             position: {lat: latitude, lng: longitude },
+//             map: map
+//           });
+//           var address = "<%= @address.address %>"
+//
+//           var distance
+//           attachSecretMessage(marker, address, address)
+//         }
+//
+//
+//         var directionsDisplay = new google.maps.DirectionsRenderer({
+//           map: map,
+//
+//           suppressMarkers : true,
+//           polylineOptions: {
+//             strokeColor: colors[i]
+//           }
+//         });
+//
+//         displayRoute(trelora, waypoints, directionsService,directionsDisplay);
+//       })
+//     }
+//
+//     function displayRoute(trelora, waypoints, service, display) {
+//       service.route({
+//         origin: trelora,
+//         destination: trelora,
+//         waypoints: waypoints,
+//         travelMode: google.maps.TravelMode.DRIVING,
+//         avoidTolls: true
+//       }, function(response, status) {
+//         if (status === google.maps.DirectionsStatus.OK) {
+//           display.setOptions({ preserveViewport: true });
+//           display.setDirections(response);
+//         } else {
+//           alert('Could not display directions due to: ' + status);
+//         }
+//       });
+//     }
+//   }
+//
+//   function attachSecretMessage(marker, secretMessage, address) {
+//
+//     var infowindow = new google.maps.InfoWindow({
+//       content: secretMessage
+//     });
+//
+//     var infowindow1 = new google.maps.InfoWindow({
+//       content: address,
+//     });
+//
+//
+//     infowindow1.open(marker.get('map'), marker)
+//     marker.addListener('click', function() {
+//
+//       infowindow.open(marker.get('map'), marker);
+//
+//     });
+//     marker.addListener('mouseout', function() {
+//       infowindow.close(marker.get('map'), marker);
+//     })
+//
+//     marker.addListener('click', function() {
+//       infowindow1.close(marker.get('map'), marker);
+//     })
+//
+//     marker.addListener('mouseout', function() {
+//       infowindow1.open(marker.get('map'), marker);
+//     })
+//
+//   }
+//
 </script>
 <script async defer
-src="https://maps.googleapis.com/maps/api/js?key=<%= ENV["GOOGLE_API_KEY"] %>&libraries=places&callback=initAutocomplete&callback=initMap">
+  src="https://maps.googleapis.com/maps/api/js?key=<%= ENV["GOOGLE_API_KEY"] %>&libraries=places&callback=initAutocomplete&callback=initMap">
 </script>
 </div>
