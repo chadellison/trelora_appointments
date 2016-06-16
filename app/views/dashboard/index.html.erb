@@ -36,23 +36,18 @@
     // render search bar
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-    // map.addListener('bounds_changed', function() {
-    //   searchBox.setBounds(map.getBounds());
-    // });
-
+    return searchBox;
   }
-
   // get list of field workers
   function getFieldWorkers(date) {
     // get list of field workers and their appointments
-
     $.ajax({
       type: 'GET',
       data: {day: date},
       url: '/api/v1/' + selection + '.json',
       success: function(data) {
         // add routes to map
-        addRoutes(data)
+        addRoutes(data);
       },
       error: function(errorBody){
         alert('error');
@@ -60,20 +55,79 @@
     });
   }
 
+  function bestAppointmentAddress(location,latLong,date) {
+    $.ajax({
+      type: 'GET',
+      url: "/api/v1/best_appointment.json?markerAddress=" + location + "&date=" + date,
+      success: function(data) {
+        // display marker where the user input address
+        if ( data !== null ) {
+          addMarker(latLong);
+          // highlight appointment that is closest by drive time to searched address
+          addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
+        }
+      },
+      error: function(errorBody){
+        alert("error")
+      }
+    })
+  }
+
+  function todaysDate(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd='0'+dd
+    }
+
+    if(mm<10) {
+        mm='0'+mm
+    }
+
+    return today = mm+'/'+dd+'/'+yyyy;
+  }
+
+  function UrlBestDay(location,date) {
+    if (getParameterByName('role') === null) {
+      var role = "x"
+    } else {
+      var role = getParameterByName('role')
+    }
+
+    $.ajax({
+      type: 'GET',
+      url: "/api/v1/url_best_day.json?markerAddress=" + location + "&date=" + date + "&role=" + role,
+      success: function(data) {
+        // drawBaseMap();
+        // console.log(data)
+        if (data !== null) {
+          // display marker where the user input address
+          addMarker({ lat: data[0].latitude, lng: data[0].longitude });
+          // highlight appointment that is closest by drive time to searched address
+          addMarker({ lat: data[3].latitude, lng: data[3].longitude }, data[2].icon);
+          // addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
+        }
+      },
+      error: function(errorBody){
+        alert("error")
+      }
+    })
+  }
+
   // add marker to map
   function addMarker(position,icon) {
-    // console.log(position)
     new google.maps.Marker({
       map: map,
       position: position,
       icon: icon,
-      // title: place.name,
     });
   }
 
   // put routes on map
   function addRoutes(fieldWorkers) {
-    drawBaseMap();
     var directionsService = new google.maps.DirectionsService;
     var colors = ['red', 'green', 'purple', 'blue', 'white', 'orange', 'yellow'];
     var trelora = "2401 15th st, Denver CO 80202";
@@ -112,31 +166,41 @@
         }
       });
 
-
     });
   }
 
+
   // add event listeners
-  function addListeners() {
+  function addListeners(searchBar, date) {
     $('#datepicker').datepicker({
       onSelect: function(dateText, inst) {
-        getFieldWorkers(dateText);
+        // getFieldWorkers(dateText);
         //Update the url & Update the browser history
-        window.history.pushState("object or string", "Title", "/new-url");
+        drawBaseMap()
+        window.history.pushState("object or string", "Title", "?date=" + dateText);
+        getFieldWorkers(dateText)
+        // console.log(dateText)
+        date = dateText
       }
     });
 
     //Search box listener
+    searchBar.addListener('places_changed', function() {
+      var places = searchBar.getPlaces();
       //Add marker...
-      //Update the url
-      //Update the browser history
+      if (places.length === 1) {
+        bestAppointmentAddress(places[0].name,places[0].geometry.location,date)
+        //Update the url
+        //Update the browser history
+
+      } else {
+        alert("be more specific");
+      }
+    })
   }
 
 
   // add searched address marker to map
-
-  // highlight appointment that is closest by drive time to searched address
-
   function getParameterByName(name) {
     var url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
@@ -149,10 +213,11 @@
 
   function initMap() {
     // render base map
-    drawBaseMap();
+    searchBar = drawBaseMap();
 
     // Set default date
-    var date;
+    var date = todaysDate()
+
     // if url contains date
     if (getParameterByName('date') !== null ) {
       // override the date
@@ -165,13 +230,16 @@
       selection = getParameterByName('role');
     }
 
+    if (getParameterByName('address') !== null ) {
+      // find the best worker
+      UrlBestDay(getParameterByName('address'),date)
+    }
     // get list of field workers
     getFieldWorkers(date);
 
     //If the url has an address
       //Add the marker...
-
-    addListeners();
+    addListeners(searchBar,date);
 
   }
 
@@ -281,16 +349,16 @@
 //           })
 //         })
 //
-//         $.ajax({
-//           type: 'GET',
-//           url: "/api/v1/best_appointment.json?markerAddress=" + place.name + "&appointments=" + appointmentIds,
-//           success: function(data) {
-//             addData(data)
-//           },
-//           error: function(errorBody){
-//             alert("error")
-//           }
-//         })
+        // $.ajax({
+        //   type: 'GET',
+        //   url: "/api/v1/best_appointment.json?markerAddress=" + place.name + "&appointments=" + appointmentIds,
+        //   success: function(data) {
+        //     addData(data)
+        //   },
+        //   error: function(errorBody){
+        //     alert("error")
+        //   }
+        // })
 //
 //         function addData(data) {
 //
