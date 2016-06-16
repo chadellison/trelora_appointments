@@ -2,10 +2,13 @@
   <ul>
     <li id="add-user"><%= link_to "Add User", "#" %></li>
     <li id="remove-user"><%= link_to "Remove User", "#" %></li>
+    <li class="field_workers"><%= link_to "All", "#" %></li>
     <li class="field_workers"><%= link_to "Photographer", "#" %></li>
     <li class="field_workers"><%= link_to "Appraiser", "#" %></li>
     <li class="datepicker">Date <input type="text" id="datepicker"></li>
     <li id="demo"></li>
+    <li class="leftArrow"><%= link_to "Left", "#" %></li>
+    <li class="rightArrow"><%= link_to "Right", "#" %></li>
   </ul>
 </div>
 <div id="user-menu" class="hidden" >
@@ -82,6 +85,23 @@
 
   function todaysDate(){
     var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd='0'+dd
+    }
+
+    if(mm<10) {
+        mm='0'+mm
+    }
+
+    return today = mm+'/'+dd+'/'+yyyy;
+  }
+
+  function processDate(time){
+    var today = new Date(time);
     var dd = today.getDate();
     var mm = today.getMonth()+1; //January is 0!
     var yyyy = today.getFullYear();
@@ -199,9 +219,33 @@
         var role = "photographers"
       } else if (buttonText === "Appraiser") {
         var role = "appraisers"
+      } else if (buttonText === "All") {
+        var role = "field_workers"
       }
 
       getFieldWorkers(date, role)
+    });
+
+    $(".leftArrow").on("click", function(){
+      var buttonText = $(this).find("a").text()
+      if (buttonText === "Left") {
+        var currentDate = new Date(date).getTime() - 86400000;
+        var previousDate = new Date(currentDate);
+        date = processDate(previousDate)
+        window.history.pushState("object or string", "Title", "?date=" + date);
+      }
+      getFieldWorkers(date)
+    });
+
+    $(".rightArrow").on("click", function(){
+      var buttonText = $(this).find("a").text()
+      if (buttonText === "Right") {
+        var currentDate = new Date(date).getTime() + 86400000;
+        var nextDate = new Date(currentDate);
+        date = processDate(nextDate)
+        window.history.pushState("object or string", "Title", "?date=" + date);
+      }
+      getFieldWorkers(date)
     });
 
     //Search box listener
