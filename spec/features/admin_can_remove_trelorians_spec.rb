@@ -1,56 +1,50 @@
 require "rails_helper"
 
 RSpec.feature "Admin can remove trelorians" do
-  scenario "Admin no longer sees removed trelorians" do
-    user = User.create(username: "Jones", profile: "https://plus.google.com/115492633106293884993")
 
-    visit root_path
+  VCR.use_cassette("admin can remove trelorians") do
+    scenario "Admin no longer sees removed trelorians" do
+      user = User.create(username: "jones", password: "123")
 
-    click_on "Remove User"
+      basic_auth!
 
-    expect(current_path).to eq root_path
+      visit root_path
+      click_on "Remove User"
 
-    expect(page).to have_content "Users"
+      expect(current_path).to eq root_path
 
-    expect(page).to have_content "Jones"
+      expect(page).to have_content "Users"
 
-    expect(User.count).to eq 1
+      expect(page).to have_content "jones"
 
-    within "input##{user.id}" do
-      click_on "Remove"
+      expect(User.count).to eq 1
+
+      within ".user" do
+        click_on "Remove"
+      end
+
+      expect(User.count).to eq 0
     end
 
-    expect(User.count).to eq 0
-  end
+    scenario "Admin removes field_worker" do
+      user = User.create(username: "jones", password: "123")
 
-  xscenario "Admin removes field_worker" do
-    field_worker = FieldWorker.create(username: "Frank")
+      basic_auth!
 
-    visit root_path
-    click_on "Remove User"
-    expect(current_path).to eq root_path
-    expect(page).to have_content "Field Workers"
-    expect(page).to have_content "Frank"
-    expect(FieldWorker.count).to eq 5
+      field_worker = FieldWorker.create(username: "Frank")
 
-    within "li:nth-child(4)" do
-      click_on "Remove"
+      visit root_path
+      click_on "Remove User"
+      expect(current_path).to eq root_path
+      expect(page).to have_content "Field Workers"
+      expect(page).to have_content "Frank"
+      expect(FieldWorker.last.status).to eq "active"
+
+      within ".field-worker" do
+        click_on "Remove"
+      end
+
+      expect(FieldWorker.last.status).to eq "inactive"
     end
-
-    expect(FieldWorker.count).to eq 5
-  end
-
-  scenario "Admin removes field_worker who has a route" do
-    visit root_path
-    click_on "Remove User"
-    expect(current_path).to eq root_path
-    expect(page).to have_content "Field Workers"
-    expect(FieldWorker.count).to eq 5
-
-    within "li:nth-child(4)" do
-      click_on "Remove"
-    end
-
-    expect(FieldWorker.count).to eq 5
   end
 end

@@ -1,5 +1,5 @@
 class AppraiserSerializer < ActiveModel::Serializer
-  attributes :id, :username, :icon, :role, :appointments
+  attributes :id, :username, :icon, :role, :status, :appointments
 
   def appointments
     instance_options[:day] ? day = instance_options[:day] : day = Date.today.to_datetime

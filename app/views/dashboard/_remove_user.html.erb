@@ -3,10 +3,10 @@
 </span>
 <h3>Users</h3>
   <hr>
-  <div class="form-group remove">
+  <div class="form-group">
     <ul>
       <% User.all.each do |user| %>
-        <div class="employee"><li><%= user.username %></li>
+        <div class="employee user"><li><%= user.username %></li>
         <li><%= button_to "Remove", api_v1_user_path(user.id), method: :delete, class: :delete, id: "#{user.id}", remote: true %></li></div>
       <% end %>
     </ul>
@@ -14,10 +14,10 @@
 <br><br>
 <h3>Field Workers</h3>
 <hr>
-<div class="form-group remove">
+<div class="form-group">
   <ul>
     <% FieldWorker.where(status: "active").each do |field_worker| %>
-      <div class="employee"><li><%= field_worker.username %></li>
+      <div class="employee field-worker"><li><%= field_worker.username %></li>
       <li><%= button_to "Remove", api_v1_field_worker_path(field_worker.id), method: :patch, class: :delete, id: "#{field_worker.id}" %></li></div>
     <% end %>
   </ul>

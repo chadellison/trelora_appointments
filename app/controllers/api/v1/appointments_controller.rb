@@ -12,5 +12,4 @@ class Api::V1::AppointmentsController < Api::ApiController
     locations = [location,appointment,appointment.field_worker, appointment.location] if appointment
     respond_with locations
   end
-
 end
