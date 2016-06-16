@@ -7,8 +7,8 @@
     <table>
     <% User.all.each do |user| %>
     <tr>
-      <td><div class="employee trelora-user"><%= user.username %></td>
-      <td><%= button_to "Remove", api_v1_user_path(user.id), method: :delete, class: :delete, id: "#{user.id}", remote: true %></div></td>
+      <td><div class="employee trelora-user"><%= user.username %>
+      <%= button_to "Remove", api_v1_user_path(user.id), method: :delete, class: :delete, id: "#{user.id}", remote: true %></div></td>
     </tr>
     <% end %>
   </table>
@@ -20,8 +20,8 @@
   <table>
     <tr>
       <% FieldWorker.where(status: "active").each do |field_worker| %>
-      <td><div class="employee trelora-field-worker"><%= field_worker.username %></td>
-      <td><%= button_to "Remove", api_v1_field_worker_path(field_worker.id), method: :patch, class: :delete, id: "#{field_worker.id}" %></div></td>
+      <td><div class="employee trelora-field-worker"><%= field_worker.username %>
+      <%= button_to "Remove", api_v1_field_worker_path(field_worker.id), method: :patch, class: :delete, id: "#{field_worker.id}" %></div></td>
     </tr>
     <% end %>
   </table>
