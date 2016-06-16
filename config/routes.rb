@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       resources :appraisers, only: [:index]
 
       get "/best_appointment", to: "appointments#best_appointment"
+      get "/url_best_day", to: "appointments#url_best_day"
     end
   end
 end
