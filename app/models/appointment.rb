@@ -15,24 +15,23 @@ class Appointment < ActiveRecord::Base
     start_time.strftime("%m/%d/%Y")
   end
 
-  def self.best_appointment(params)
-    appointments = find_by_url_time(params[:date],params[:role])
+  def self.best_appointment(appointment_data)
+    appointments = find_by_url_time(appointment_data[:date],appointment_data[:role])
     appointments.sort_by do |appointment|
-      GoogleDistanceMatrix.new.time(appointment.location.address, params[:markerAddress])
+      GoogleDistanceMatrix.new.time(appointment.location.address, appointment_data[:markerAddress])
     end.first
   end
 
   def self.find_by_url_time(date,role)
-    if role != "x"
-      appointments = Appointment.joins(:field_worker).where("field_workers.status = ? AND field_workers.role = ?", 'active', f_w_role_converter(role))
-    else
+    if role == "undefined"
       appointments = Appointment.joins(:field_worker).where("field_workers.status = ?", 'active')
+    else
+      appointments = Appointment.joins(:field_worker).where("field_workers.status = ? AND field_workers.role = ?", 'active', f_w_role_converter(role))
     end
-    appointments.select { |a| a.url_time == date }
+    appointments.select { |appointment| appointment.url_time == date }
   end
 
   def self.f_w_role_converter(role)
     role == "photographers" ? role = 0 : role = 1
   end
-
 end

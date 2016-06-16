@@ -120,7 +120,7 @@
 
   function UrlBestDay(location,date) {
     if (getParameterByName('role') === null) {
-      var role = "x"
+      var role = "undefined"
     } else {
       var role = getParameterByName('role')
     }
@@ -157,7 +157,7 @@
   // put routes on map
   function addRoutes(fieldWorkers) {
     var directionsService = new google.maps.DirectionsService;
-    var colors = ['red', 'green', 'purple', 'blue', 'white', 'orange', 'yellow'];
+    var colors = ['#993300', '#0099cc', '#669999', '#cc3300', '#009999', '#cc6699', 'yellow'];
     var trelora = "2401 15th st, Denver CO 80202";
     // iterate through each field workers
     fieldWorkers.forEach(function(fieldWorker, index){
