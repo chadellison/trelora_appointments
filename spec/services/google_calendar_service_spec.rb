@@ -8,7 +8,7 @@ RSpec.describe GoogleCalendarService do
       field_worker3 = FieldWorker.create(username: "jenn@trelora.com", trelora_id: 14)
 
       GoogleCalendarService.new.store_events
-      expect(Appointment.count).to eq 11
+      expect(Appointment.count).to eq 21
       expect(Appointment.fourth.description).to eq "this is a summary"
       expect(Appointment.last.field_worker_id).to eq field_worker3.id
     end
