@@ -39,7 +39,11 @@
     return searchBox;
   }
   // get list of field workers
-  function getFieldWorkers(date) {
+  function getFieldWorkers(date,role) {
+    if (typeof role !== "undefined") {
+      selection = role
+    }
+
     // get list of field workers and their appointments
     $.ajax({
       type: 'GET',
@@ -47,6 +51,7 @@
       url: '/api/v1/' + selection + '.json',
       success: function(data) {
         // add routes to map
+        drawBaseMap()
         addRoutes(data);
       },
       error: function(errorBody){
@@ -104,7 +109,6 @@
       url: "/api/v1/url_best_day.json?markerAddress=" + location + "&date=" + date + "&role=" + role,
       success: function(data) {
         // drawBaseMap();
-        // console.log(data)
         if (data !== null) {
           // display marker where the user input address
           var address = addMarker({ lat: data[0].latitude, lng: data[0].longitude });
@@ -114,7 +118,6 @@
           var closest_appointment = addMarker({ lat: data[3].latitude, lng: data[3].longitude }, data[2].icon);
           // addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
           attachLocMessage(closest_appointment,"Closest Spot",data[3].address)
-          console.log(data[3])
         }
       },
       error: function(errorBody){
@@ -148,7 +151,6 @@
         // add marker at location
         var marker = addMarker({ lat: appointment.location.latitude, lng: appointment.location.longitude }, fieldWorker.icon);
         var message = appointment.info.start_time + "<br />" + appointment.info.end_time
-        // console.log(appointment)
         attachMessage(marker,message,appointment.location.address)
       });
       // pass through waypoints to display directions function
@@ -188,9 +190,19 @@
         drawBaseMap()
         window.history.pushState("object or string", "Title", "?date=" + dateText);
         getFieldWorkers(dateText)
-        // console.log(dateText)
         date = dateText
       }
+    });
+
+    $(".field_workers").on("click", function(){
+      var buttonText = $(this).find("a").text()
+      if (buttonText === "Photographer") {
+        var role = "photographers"
+      } else if (buttonText === "Appraiser") {
+        var role = "appraisers"
+      }
+
+      getFieldWorkers(date, role)
     });
 
     //Search box listener
@@ -219,6 +231,7 @@
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
   }
+
 
   function initMap() {
     // render base map
