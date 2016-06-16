@@ -1,7 +1,7 @@
-event_data = { summary: "this is a summary", location: "Thornton Colorado Landscaping, Thornton Parkway, Thornton, CO, United States",
-               description: "this is a description", start_time: (Date.yesterday.to_datetime + 8.hour),
-               end_time: (Date.yesterday.to_datetime + 9.hour), email: "jenn@trelora.com"}
-GoogleCalendarService.new.create_event(event_data)
+event_data = { summary: "this is a summary", location: "4335 E 3rd Ave, Denver, CO 80220",
+               description: "this is a description", start_time: (Date.today.to_datetime - 1 + 14.hour),
+               end_time: (Date.today.to_datetime - 1 + 15.hour), email: "jenn@trelora.com"}
+  GoogleCalendarService.new.create_event(event_data)
 
 # antonio@trelora.com 8
 # karen@trelora.com 12
