@@ -7,8 +7,8 @@
     <li class="field_workers"><%= link_to "Appraiser", "#" %></li>
     <li class="datepicker">Date <input type="text" id="datepicker"></li>
     <li id="demo"></li>
-    <li class="leftArrow"><%= link_to "Left", "#" %></li>
-    <li class="rightArrow"><%= link_to "Right", "#" %></li>
+    <li class="leftArrow"><%= link_to "Previous", "#" %></li>
+    <li class="rightArrow"><%= link_to "Next", "#" %></li>
   </ul>
 </div>
 <div id="user-menu" class="hidden" >
@@ -87,7 +87,7 @@
   function todaysDate(){
     var today = new Date();
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth()+1;
     var yyyy = today.getFullYear();
 
     if(dd<10) {
@@ -104,7 +104,7 @@
   function processDate(time){
     var today = new Date(time);
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth()+1;
     var yyyy = today.getFullYear();
 
     if(dd<10) {
@@ -138,10 +138,6 @@
           // addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
           attachLocMessage(closest_appointment,"Closest Spot",data[3].address)
         }
-        // else {
-        //   var address = addMarker({ lat: data[0].latitude, lng: data[0].longitude });
-        //   attachLocMessage(address,data[0].address,data[0].address)
-        // }
       },
       error: function(errorBody){
         alert("error")
@@ -208,7 +204,6 @@
   function addListeners(searchBar, date) {
     $('#datepicker').datepicker({
       onSelect: function(dateText, inst) {
-        // getFieldWorkers(dateText);
         //Update the url & Update the browser history
         drawBaseMap()
         window.history.pushState("object or string", "Title", "?date=" + dateText);
@@ -232,7 +227,7 @@
 
     $(".leftArrow").on("click", function(){
       var buttonText = $(this).find("a").text()
-      if (buttonText === "Left") {
+      if (buttonText === "Previous") {
         var currentDate = new Date(date).getTime() - 86400000;
         var previousDate = new Date(currentDate);
         date = processDate(previousDate)
@@ -243,7 +238,7 @@
 
     $(".rightArrow").on("click", function(){
       var buttonText = $(this).find("a").text()
-      if (buttonText === "Right") {
+      if (buttonText === "Next") {
         var currentDate = new Date(date).getTime() + 86400000;
         var nextDate = new Date(currentDate);
         date = processDate(nextDate)
@@ -286,7 +281,6 @@
 
     // Set default date
     var date = todaysDate()
-    // window.history.pushState("object or string", "Title", "?date=" + date);
     // if url contains date
     if (getParameterByName('date') !== null ) {
       // override the date
