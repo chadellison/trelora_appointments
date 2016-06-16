@@ -62,9 +62,11 @@
       success: function(data) {
         // display marker where the user input address
         if ( data !== null ) {
-          addMarker(latLong);
+          var address = addMarker(latLong);
+          attachMessage(address,location,latLong)
           // highlight appointment that is closest by drive time to searched address
-          addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
+          var closest_appointment = addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
+          attachMessage(closest_appointment,"Closest Spot",data.location)
         }
       },
       error: function(errorBody){
@@ -105,10 +107,14 @@
         // console.log(data)
         if (data !== null) {
           // display marker where the user input address
-          addMarker({ lat: data[0].latitude, lng: data[0].longitude });
+          var address = addMarker({ lat: data[0].latitude, lng: data[0].longitude });
+
+          attachLocMessage(address,data[0].address,data[0].address)
           // highlight appointment that is closest by drive time to searched address
-          addMarker({ lat: data[3].latitude, lng: data[3].longitude }, data[2].icon);
+          var closest_appointment = addMarker({ lat: data[3].latitude, lng: data[3].longitude }, data[2].icon);
           // addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
+          attachLocMessage(closest_appointment,"Closest Spot",data[3].address)
+          console.log(data[3])
         }
       },
       error: function(errorBody){
@@ -119,7 +125,7 @@
 
   // add marker to map
   function addMarker(position,icon) {
-    new google.maps.Marker({
+    return new google.maps.Marker({
       map: map,
       position: position,
       icon: icon,
@@ -140,7 +146,10 @@
         // add their appointment locations to waypoints variable
         waypoints.push({location: appointment.location.address});
         // add marker at location
-        addMarker({ lat: appointment.location.latitude, lng: appointment.location.longitude }, fieldWorker.icon);
+        var marker = addMarker({ lat: appointment.location.latitude, lng: appointment.location.longitude }, fieldWorker.icon);
+        var message = appointment.info.start_time + "<br />" + appointment.info.end_time
+        // console.log(appointment)
+        attachMessage(marker,message,appointment.location.address)
       });
       // pass through waypoints to display directions function
       var directionsDisplay = new google.maps.DirectionsRenderer({
@@ -242,6 +251,39 @@
     addListeners(searchBar,date);
 
   }
+
+  function attachMessage(marker, secretMessage, address) {
+
+    var infowindow = new google.maps.InfoWindow({
+      content: secretMessage
+    });
+
+    marker.addListener('mouseover', function() {
+      infowindow.open(marker.get('map'), marker);
+    })
+
+    marker.addListener('mouseout', function() {
+      infowindow.close(marker.get('map'), marker);
+    })
+
+  }
+
+  function attachLocMessage(marker, secretMessage, address) {
+
+    var infowindow = new google.maps.InfoWindow({
+      content: secretMessage
+    });
+
+    // marker.addListener('mouseover', function() {
+      infowindow.open(marker.get('map'), marker);
+    // })
+
+    marker.addListener('clickOn', function() {
+      infowindow.close(marker.get('map'), marker);
+    })
+
+  }
+
 
 
 //   function initMap() {
