@@ -1,7 +1,7 @@
 <div class="nav">
   <ul>
-    <li id="add-user"><%= link_to "Add User", "#" %></li>
-    <li id="remove-user"><%= link_to "Remove User", "#" %></li>
+    <li id="add-user"><%= link_to "Add User", "#" if admin? %></li>
+    <li id="remove-user"><%= link_to "Remove User", "#" if admin? %></li>
     <li class="field_workers"><%= link_to "All", "#" %></li>
     <li class="field_workers"><%= link_to "Photographer", "#" %></li>
     <li class="field_workers"><%= link_to "Appraiser", "#" %></li>
