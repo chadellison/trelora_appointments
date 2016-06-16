@@ -9,7 +9,12 @@ class Api::V1::AppointmentsController < Api::ApiController
   def url_best_day
     location = Location.find_or_create_by(address: params[:markerAddress])
     appointment = Appointment.best_appointment(params)
-    locations = [location,appointment,appointment.field_worker, appointment.location] if appointment
+    if appointment
+      locations = [location,appointment,appointment.field_worker, appointment.location]
+    else
+      # binding.pry
+      locations = [location]
+    end
     respond_with locations
   end
 end

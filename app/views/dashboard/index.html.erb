@@ -26,6 +26,7 @@
   var selection = 'field_workers';
   var map;
   function drawBaseMap() {
+
     var input = document.getElementById('pac-input');
     var searchBox = new google.maps.places.SearchBox(input);
 
@@ -69,12 +70,12 @@
       url: "/api/v1/best_appointment.json?markerAddress=" + location + "&date=" + date,
       success: function(data) {
         // display marker where the user input address
+        var address = addMarker(latLong);
+        attachLocMessage(address,location,latLong)
         if ( data !== null ) {
-          var address = addMarker(latLong);
-          attachMessage(address,location,latLong)
           // highlight appointment that is closest by drive time to searched address
           var closest_appointment = addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
-          attachMessage(closest_appointment,"Closest Spot",data.location)
+          attachLocMessage(closest_appointment,"Closest Spot",data.location)
         }
       },
       error: function(errorBody){
@@ -127,17 +128,20 @@
       type: 'GET',
       url: "/api/v1/url_best_day.json?markerAddress=" + location + "&date=" + date + "&role=" + role,
       success: function(data) {
-        // drawBaseMap();
-        if (data !== null) {
           // display marker where the user input address
-          var address = addMarker({ lat: data[0].latitude, lng: data[0].longitude });
+        var address = addMarker({ lat: data[0].latitude, lng: data[0].longitude });
 
-          attachLocMessage(address,data[0].address,data[0].address)
+        attachLocMessage(address,data[0].address,data[0].address)
+        if (typeof data[1] !== "undefined") {
           // highlight appointment that is closest by drive time to searched address
           var closest_appointment = addMarker({ lat: data[3].latitude, lng: data[3].longitude }, data[2].icon);
           // addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
           attachLocMessage(closest_appointment,"Closest Spot",data[3].address)
         }
+        // else {
+        //   var address = addMarker({ lat: data[0].latitude, lng: data[0].longitude });
+        //   attachLocMessage(address,data[0].address,data[0].address)
+        // }
       },
       error: function(errorBody){
         alert("error")
@@ -282,7 +286,7 @@
 
     // Set default date
     var date = todaysDate()
-
+    // window.history.pushState("object or string", "Title", "?date=" + date);
     // if url contains date
     if (getParameterByName('date') !== null ) {
       // override the date
