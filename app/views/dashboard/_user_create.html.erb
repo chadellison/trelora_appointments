@@ -1,16 +1,22 @@
 <span class="xit-box" id="exit-user-menu">
   <%= image_tag("http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/24/Actions-application-exit-icon.png") %>
 </span>
-<h3>Create new user below</h3>
+<h3>Create new user</h3>
 
   <hr>
   <div class="form-group">
     <input class="user-fields" placeholder="https://plus.google.com/num_id" type="text" id="user-profile">
   </div>
   <input class="submit-button" id="user-submit" type="button" name="submit" value="Add New Trelora User">
-<br />
-<br />
-<h3>Create new field worker below</h3>
+<div class="form-group">
+  <%= form_for(User.new, url: "/api/v1/users") do |f| %>
+    <%= f.text_field :username, class: "user-fields", id: "user-profile", placeholder: "email" %>
+    <%= f.submit "Add User", class: "submit-button", id: "user-submit", remote: true %>
+  <% end %>
+</div>
+<br>
+<br>
+<h3>Create new field worker</h3>
 
   <hr>
     <div class="form-group">

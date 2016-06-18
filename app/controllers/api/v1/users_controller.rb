@@ -3,7 +3,9 @@ class Api::V1::UsersController < Api::ApiController
 
   def create
     user = User.create(user_params)
+    flash[:creat_user] = "#{user_params[:username]} was created"
     respond_with user, location: nil
+    # redirect_to root_path
   end
 
   def show

@@ -11,6 +11,7 @@
     <li class="rightArrow"><%= link_to "Next", "#" %></li>
   </ul>
 </div>
+<%= flash[:create_user] %>
 <div id="user-menu" class="hidden" >
   <%= render partial: "dashboard/user_create" %>
 </div>
