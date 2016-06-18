@@ -2,37 +2,33 @@
   <%= image_tag("http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/24/Actions-application-exit-icon.png") %>
 </span>
 <h3>Create new user</h3>
-
-  <hr>
-  <div class="form-group">
-    <input class="user-fields" placeholder="https://plus.google.com/num_id" type="text" id="user-profile">
-  </div>
-  <input class="submit-button" id="user-submit" type="button" name="submit" value="Add New Trelora User">
+<hr>
 <div class="form-group">
   <%= form_for(User.new, url: "/api/v1/users") do |f| %>
-    <%= f.text_field :username, class: "user-fields", id: "user-profile", placeholder: "email" %>
-    <%= f.submit "Add User", class: "submit-button", id: "user-submit", remote: true %>
+    <%= f.text_field :username, class: "user-fields", placeholder: "email" %>
+    <%= f.text_field :password, class: "user-fields", placeholder: "password" %>
+    <%= f.text_field :role, class: "user-fields", placeholder: "role" %>
+    <%= f.submit "Add User", class: "submit-button" %>
   <% end %>
 </div>
 <br>
 <br>
 <h3>Create new field worker</h3>
-
-  <hr>
-    <div class="form-group">
-      <%= text_field_tag 'f-w-username', nil, placeholder: "antonio@trelora.com", class: "user-fields" %>
-      <div class="f-w-info-wrapper">
-        <div id="trelora-id-field">
-          <%= text_field_tag "f-w-trelora-id", nil, placeholder: "trelora id" %>
-        </div>
-        <div class="job-role-button">
-          <input type="radio" class="radio_item" value="photographer" name="role" id="photographer">
-          <label class="label_item" for="photographer"><%= (image_tag "camera_pictogram.png", width: "30px" ) %></label>
-        </div>
-        <div class="job-role-button">
-          <input type="radio" class="radio_item" value="appraiser" name="role" id="appraiser">
-          <label class="label_item" for="appraiser"><%= (image_tag "appraiser.jpg", width: "30px" ) %></label>
-        </div>
-      </div>
-      <%= submit_tag "Add a new field worker", class:"submit-button", id:"f-w-submit" %>
+<hr>
+<div class="form-group">
+  <%= text_field_tag 'f-w-username', nil, placeholder: "antonio@trelora.com", class: "user-fields" %>
+  <div class="f-w-info-wrapper">
+    <div id="trelora-id-field">
+      <%= text_field_tag "f-w-trelora-id", nil, placeholder: "trelora id" %>
     </div>
+    <div class="job-role-button">
+      <input type="radio" class="radio_item" value="photographer" name="role" id="photographer">
+      <label class="label_item" for="photographer"><%= (image_tag "camera_pictogram.png", width: "30px" ) %></label>
+    </div>
+    <div class="job-role-button">
+      <input type="radio" class="radio_item" value="appraiser" name="role" id="appraiser">
+      <label class="label_item" for="appraiser"><%= (image_tag "appraiser.jpg", width: "30px" ) %></label>
+    </div>
+  </div>
+  <%= submit_tag "Add a new field worker", class:"submit-button", id:"f-w-submit" %>
+</div>
