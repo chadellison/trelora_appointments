@@ -2,8 +2,9 @@ class Api::V1::UsersController < Api::ApiController
   respond_to :json
 
   def create
-    user = User.create(user_params)
-    respond_with user, location: nil
+    User.create(user_params)
+    flash[:success] = "#{user_params[:username]} was created"
+    redirect_to root_path
   end
 
   def show
@@ -17,6 +18,6 @@ class Api::V1::UsersController < Api::ApiController
   private
 
   def user_params
-    params.require(:user).permit(:username, :role, :token, :password, :id)
+    params.require(:user).permit(:username, :role, :password)
   end
 end

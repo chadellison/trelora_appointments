@@ -6,7 +6,7 @@ class Api::V1::FieldWorkersController < Api::ApiController
   end
 
   def create
-    respond_with FieldWorker.create_f_w(f_w_params), location: nil
+    respond_with FieldWorker.create_f_w(f_w_params)
   end
 
   def update
