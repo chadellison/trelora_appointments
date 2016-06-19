@@ -34,8 +34,7 @@ $(document).ready(function() {
       dataType: "JSON",
       data: postParams,
       success: function(data){
-
-        alert("created user")
+        $(".new-trelorians").append("Created new user!")
         closeMenu()
       },
 
@@ -58,7 +57,7 @@ $(document).ready(function() {
       dataType: "JSON",
       data: postParams,
       success: function(data){
-        alert("created field worker")
+        $(".new-trelorians").append("Created new field worker!")
         closeMenu()
       },
       error: function(errorBody){
