@@ -9,16 +9,23 @@ $(document).ready(function() {
     $('#map').addClass("map-width-75");
   });
 
-  $('#exit-user-menu').on('click', function() {
+  function closeMenu() {
     $('#user-menu').removeClass("user-create-menu");
     $('#user-menu').addClass("hidden");
     $('#map').removeClass("map-width-75");
     $('#map').addClass("map-width-100");
+  }
+
+  $('#exit-user-menu').on('click', function() {
+    closeMenu()
   });
 
   $("#user-submit").on('click', function(){
-    var postParams = { field_worker:
-      { profile: $("#user-profile").val() }
+    var postParams = { user:
+      { username: $("#user-username").val(),
+        password: $("#user-password").val(),
+        role: $("#user-role").val()
+      }
     }
 
     $.ajax({
@@ -28,6 +35,8 @@ $(document).ready(function() {
       data: postParams,
       success: function(data){
 
+        alert("created user")
+        closeMenu()
       },
 
       error: function(errorBody){
@@ -49,7 +58,8 @@ $(document).ready(function() {
       dataType: "JSON",
       data: postParams,
       success: function(data){
-
+        alert("created field worker")
+        closeMenu()
       },
       error: function(errorBody){
         alert("error")
