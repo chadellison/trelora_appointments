@@ -30,6 +30,7 @@
   var map;
   function drawBaseMap() {
     $("#datepicker").val(getParam("date"))
+    $("#pac-input").val(getParam("address"))
 
     var input = document.getElementById('pac-input');
     var searchBox = new google.maps.places.SearchBox(input);
@@ -68,7 +69,7 @@
     });
   }
 
-  function bestAppointmentAddress(location,latLong,date) {
+  function bestAppointmentAddress(location, latLong, date) {
     $.ajax({
       type: 'GET',
       url: "/api/v1/best_appointment.json?markerAddress=" + location + "&date=" + date,
