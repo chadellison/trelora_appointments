@@ -3,8 +3,8 @@
     <li id="add-user"><%= link_to "Add User", "#" if admin? %></li>
     <li id="remove-user"><%= link_to "Remove User", "#" if admin? %></li>
     <li class="field_workers"><%= link_to "All", "#" %></li>
-    <li class="field_workers"><%= link_to "Photographer", "#" %></li>
-    <li class="field_workers"><%= link_to "Appraiser", "#" %></li>
+    <li class="field_workers"><%= link_to "Photographers", "#" %></li>
+    <li class="field_workers"><%= link_to "Appraisers", "#" %></li>
     <li class="datepicker">Date <input type="text" id="datepicker"></li>
     <li id="demo"></li>
     <li class="leftArrow"><%= link_to "Previous", "#" %></li>
@@ -131,10 +131,10 @@
 
 
   function UrlBestDay(location,date) {
-    if (getParameterByName('role') === null) {
+    if (getParam("role")) {
       var role = "undefined"
     } else {
-      var role = getParameterByName('role')
+      var role = getParam("role")
     }
     $.ajax({
       type: 'GET',
@@ -242,15 +242,12 @@
     });
 
     $(".field_workers").on("click", function(){
-      var buttonText = $(this).find("a").text()
-      if (buttonText === "Photographer") {
-        var role = "photographers"
-      } else if (buttonText === "Appraiser") {
-        var role = "appraisers"
-      } else if (buttonText === "All") {
-        var role = "field_workers"
+      var buttonText = $(this).find("a").text().toLowerCase()
+      var role = buttonText
+      if (buttonText === "all") {
+        role = "field_workers"
       }
-      window.history.pushState("object or string", "Title", updateParams("role", buttonText));
+      window.history.pushState("object or string", "Title", updateParams("role", role));
       getFieldWorkers(date, role)
     });
 
@@ -309,15 +306,15 @@
   }
 
   // add searched address marker to map
-  function getParameterByName(name) {
-    var url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-  }
+  // function getParameterByName(name) {
+    // var url = window.location.href;
+    // name = name.replace(/[\[\]]/g, "\\$&");
+    // var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+    //     results = regex.exec(url);
+    // if (!results) return null;
+    // if (!results[2]) return '';
+    // return decodeURIComponent(results[2].replace(/\+/g, " "));
+  // }
 
 
   function initMap() {
@@ -327,23 +324,23 @@
     // Set default date
     var date = todaysDate()
     // if url contains date
-    if (getParameterByName('date') !== null ) {
+    if (getParam("date")) {
       // override the date
-      date = getParameterByName('date');
+      date = getParam('date');
     }
 
     // if url contains selection
-    if (getParameterByName('role') !== null ) {
+    if (getParam("role")) {
       // override the selection
-      selection = getParameterByName('role');
+      selection = getParam("role");
     }
 
     // get list of field workers
     getFieldWorkers(date);
 
-    if (getParameterByName('address') !== null ) {
+    if (getParam("address")) {
       // find the best worker
-      UrlBestDay(getParameterByName('address'),date)
+      UrlBestDay(getParam("address"),date)
     }
 
     //If the url has an address
