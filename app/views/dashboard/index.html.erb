@@ -260,7 +260,7 @@
         var currentDate = new Date(date).getTime() - 86400000;
         var previousDate = new Date(currentDate);
         date = processDate(previousDate)
-        window.history.pushState("object or string", "Title", "?date=" + date);
+        window.history.pushState("object or string", "Title", updateParams("date", date));
       }
       getFieldWorkers(date)
     });
@@ -271,7 +271,7 @@
         var currentDate = new Date(date).getTime() + 86400000;
         var nextDate = new Date(currentDate);
         date = processDate(nextDate)
-        window.history.pushState("object or string", "Title", "?date=" + date);
+        window.history.pushState("object or string", "Title", updateParams("date", date));
       }
       getFieldWorkers(date)
     });
