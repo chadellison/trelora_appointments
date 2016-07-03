@@ -29,6 +29,7 @@
   var selection = 'field_workers';
   var map;
   function drawBaseMap() {
+    $("#datepicker").val(getParam("date"))
 
     var input = document.getElementById('pac-input');
     var searchBox = new google.maps.places.SearchBox(input);
@@ -46,7 +47,7 @@
     return searchBox;
   }
   // get list of field workers
-  function getFieldWorkers(date,role) {
+  function getFieldWorkers(date, role) {
     if (typeof role !== "undefined") {
       selection = role
     }
@@ -212,6 +213,18 @@
   }
 
 
+  function getParam(key) {
+    var value = ''
+    params = window.location.search.replace("?", "").split("&");
+    params.forEach(function (param) {
+    tmp = param.split("=")
+      if (tmp[0] === key) {
+        value = tmp[1]
+      }
+    })
+    return value
+  }
+
   // add event listeners
   function addListeners(searchBar, date) {
     $('#datepicker').datepicker({
@@ -263,13 +276,13 @@
     searchBar.addListener('places_changed', function() {
       var places = searchBar.getPlaces();
       //Add marker...
-      if (places.length === 1) {
+      if (places) {
         bestAppointmentAddress(places[0].name,places[0].geometry.location,date)
         //Update the url
         //Update the browser history
 
       } else {
-        alert("be more specific");
+        alert("Please be more specific");
       }
     })
   }
@@ -335,11 +348,9 @@
   }
 
   function attachLocMessage(marker, secretMessage, address) {
-
     var infowindow = new google.maps.InfoWindow({
       content: secretMessage
     });
-
     // marker.addListener('mouseover', function() {
       infowindow.open(marker.get('map'), marker);
     // })
@@ -347,7 +358,6 @@
     marker.addListener('clickOn', function() {
       infowindow.close(marker.get('map'), marker);
     })
-
   }
 
 </script>
