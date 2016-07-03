@@ -36,7 +36,7 @@
     var searchBox = new google.maps.places.SearchBox(input);
 
     // render map
-    $('#map').html('');
+    // $('#map').html('');
     map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 39.753, lng: -104.9775},
       zoom: 11
@@ -213,10 +213,13 @@
     });
   }
 
+  function prepareUrl() {
+    return window.location.search.replace("%20", "")
+  }
 
   function getParam(key) {
     var value = ''
-    params = window.location.search.replace("?", "").split("&");
+    var params = prepareUrl().replace("?", "").split("&");
     params.forEach(function (param) {
     tmp = param.split("=")
       if (tmp[0] === key) {
@@ -232,7 +235,7 @@
       onSelect: function(dateText, inst) {
         //Update the url & Update the browser history
         drawBaseMap()
-        window.history.pushState("object or string", "Title", "?date=" + dateText);
+        window.history.pushState("object or string", "Title", updateParams("date", dateText));
         getFieldWorkers(dateText)
         date = dateText
       }
@@ -274,10 +277,16 @@
     });
 
     //Search box listener
+    $("#pac-input").on("change", function() {
+      var text = $(this).val()
+      var state = {address: text}
+
+      window.history.pushState(state, "title", updateParams("address", text));
+    });
     searchBar.addListener('places_changed', function() {
       var places = searchBar.getPlaces();
       //Add marker...
-      if (places) {
+      if (places.length) {
         bestAppointmentAddress(places[0].name,places[0].geometry.location,date)
         //Update the url
         //Update the browser history
@@ -286,6 +295,17 @@
         alert("Please be more specific");
       }
     })
+  }
+
+  function updateParams(key, value) {
+    var params = prepareUrl()
+    if (!params) {
+      return "?" + key + "=" + value
+    } else if (params.includes(key)) {
+      return params.replace(key + "=" + getParam(key), key + "=" + value)
+    } else {
+      return params + "&" + key + "=" + value
+    }
   }
 
   // add searched address marker to map
@@ -328,12 +348,10 @@
 
     //If the url has an address
       //Add the marker...
-    addListeners(searchBar,date);
-
+    addListeners(searchBar, date);
   }
 
   function attachMessage(marker, secretMessage, address) {
-
     var infowindow = new google.maps.InfoWindow({
       content: secretMessage
     });
@@ -345,7 +363,6 @@
     marker.addListener('mouseout', function() {
       infowindow.close(marker.get('map'), marker);
     })
-
   }
 
   function attachLocMessage(marker, secretMessage, address) {
