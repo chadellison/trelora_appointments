@@ -250,7 +250,7 @@
       } else if (buttonText === "All") {
         var role = "field_workers"
       }
-
+      window.history.pushState("object or string", "Title", updateParams("role", buttonText));
       getFieldWorkers(date, role)
     });
 
