@@ -5,7 +5,7 @@ class Api::V1::BestAppointmentsController < Api::ApiController
     location = Location.find_or_create_by(address: params[:markerAddress])
     appointment = Appointment.best_appointment(params)
     if appointment
-      locations = [location,appointment,appointment.field_worker, appointment.location]
+      locations = [location, appointment, appointment.field_worker, appointment.location]
     else
       locations = [location]
     end

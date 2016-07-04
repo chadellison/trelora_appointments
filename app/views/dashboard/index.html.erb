@@ -36,8 +36,8 @@
       address = address.replace("%20", " ")
     }
     $("#pac-input").val(address)
-
     var input = document.getElementById('pac-input');
+
     var searchBox = new google.maps.places.SearchBox(input);
 
     // render map
@@ -97,15 +97,15 @@
     var mm = today.getMonth()+1;
     var yyyy = today.getFullYear();
 
-    if(dd<10) {
-        dd='0'+dd
+    if(dd < 10) {
+        dd = '0' + dd
     }
 
-    if(mm<10) {
-        mm='0'+mm
+    if(mm < 10) {
+        mm = '0' + mm
     }
 
-    return today = mm+'/'+dd+'/'+yyyy;
+    return today = mm + '/' + dd + '/' + yyyy;
   }
 
   function formatAppointmentTime(time){
@@ -128,11 +128,13 @@
           // display marker where the user input address
         var address = addMarker({ lat: data[0].latitude, lng: data[0].longitude });
 
-        attachLocMessage(address,data[0].address,data[0].address)
+        attachLocMessage(address, data[0].address, data[0].address)
         if (typeof data[1] !== "undefined") {
           // highlight appointment that is closest by drive time to searched address
           var closest_appointment = addMarker({ lat: data[3].latitude, lng: data[3].longitude }, data[2].icon);
-          attachLocMessage(closest_appointment,"Closest Spot",data[3].address)
+          attachLocMessage(closest_appointment, "Closest", data[3].address)
+          // data[2].icon
+          // console.log(this)
         }
       },
       error: function(errorBody){
