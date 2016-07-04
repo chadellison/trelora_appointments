@@ -69,26 +69,6 @@
     });
   }
 
-  function bestAppointmentAddress(location, latLong, date) {
-    $.ajax({
-      type: 'GET',
-      url: "/api/v1/best_appointment.json?markerAddress=" + location + "&date=" + date,
-      success: function(data) {
-        // display marker where the user input address
-        var address = addMarker(latLong);
-        attachLocMessage(address,location,latLong)
-        if ( data !== null ) {
-          // highlight appointment that is closest by drive time to searched address
-          var closest_appointment = addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
-          attachLocMessage(closest_appointment,"Closest Spot",data.location)
-        }
-      },
-      error: function(errorBody){
-        alert("error")
-      }
-    })
-  }
-
   function todaysDate(){
     var today = new Date();
     var dd = today.getDate();
@@ -130,15 +110,15 @@
   }
 
 
-  function UrlBestDay(location,date) {
+  function BestAppointment(location, date) {
+    var role = ""
+
     if (getParam("role")) {
-      var role = "undefined"
-    } else {
-      var role = getParam("role")
+      role = getParam("role")
     }
     $.ajax({
       type: 'GET',
-      url: "/api/v1/url_best_day.json?markerAddress=" + location + "&date=" + date + "&role=" + role,
+      url: "/api/v1/best_appointment.json?markerAddress=" + location + "&date=" + date + "&role=" + role,
       success: function(data) {
           // display marker where the user input address
         var address = addMarker({ lat: data[0].latitude, lng: data[0].longitude });
@@ -279,19 +259,8 @@
       var state = {address: text}
 
       window.history.pushState(state, "title", updateParams("address", text));
+      BestAppointment(getParam("address"), getParam("date"))
     });
-    searchBar.addListener('places_changed', function() {
-      var places = searchBar.getPlaces();
-      //Add marker...
-      if (places.length) {
-        bestAppointmentAddress(places[0].name,places[0].geometry.location,date)
-        //Update the url
-        //Update the browser history
-
-      } else {
-        alert("Please be more specific");
-      }
-    })
   }
 
   function updateParams(key, value) {
@@ -328,7 +297,7 @@
 
     if (getParam("address")) {
       // find the best worker
-      UrlBestDay(getParam("address"),date)
+      BestAppointment(getParam("address"), date)
     }
 
     //If the url has an address

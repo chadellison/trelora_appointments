@@ -1,12 +1,7 @@
-class Api::V1::AppointmentsController < Api::ApiController
+class Api::V1::BestAppointmentsController < Api::ApiController
   respond_to :json
 
-  def best_appointment
-    appointment = Appointment.best_appointment(params)
-    respond_with appointment
-  end
-
-  def url_best_day
+  def show
     location = Location.find_or_create_by(address: params[:markerAddress])
     appointment = Appointment.best_appointment(params)
     if appointment

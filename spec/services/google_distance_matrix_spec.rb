@@ -6,7 +6,7 @@ RSpec.describe GoogleDistanceMatrix do
       location = "800 Howard St., San Francisco, CA 94103"
       location2 = "2260 Corondao Pkwy N Denver CO 80229"
       service = GoogleDistanceMatrix.new
-      expect(service.time(location, location2)).to eq 65242
+      expect(service.time(location, location2)).to eq 65107
     end
   end
 end
