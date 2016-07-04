@@ -7,8 +7,8 @@
     <li class="field_workers"><%= link_to "Appraisers", "#" %></li>
     <li class="datepicker">Date <input type="text" id="datepicker"></li>
     <li id="demo"></li>
-    <li class="leftArrow"><%= link_to "Previous", "#" %></li>
-    <li class="rightArrow"><%= link_to "Next", "#" %></li>
+    <li class="arrow"><%= link_to "Previous", "#" %></li>
+    <li class="arrow"><%= link_to "Next", "#" %></li>
   </ul>
 </div>
 
@@ -30,7 +30,12 @@
   var map;
   function drawBaseMap() {
     $("#datepicker").val(getParam("date"))
-    $("#pac-input").val(getParam("address"))
+    var address = getParam("address")
+
+    while (address.includes("%20")) {
+      address = address.replace("%20", " ")
+    }
+    $("#pac-input").val(address)
 
     var input = document.getElementById('pac-input');
     var searchBox = new google.maps.places.SearchBox(input);
@@ -106,7 +111,7 @@
   function formatAppointmentTime(time){
     var today = new Date(time);
     var h = today.getHours()
-    return today = h + " " + "oclock"
+    return today = h + " " + "o'clock"
   }
 
 
@@ -162,8 +167,8 @@
         var startTime = formatAppointmentTime(appointment.info.start_time)
         var endTime = formatAppointmentTime(appointment.info.end_time)
         var marker = addMarker({ lat: appointment.location.latitude, lng: appointment.location.longitude }, fieldWorker.icon);
-        var message = fieldWorker.username + "<br />" + startTime + "<br />" + endTime +
-                      "<br />" + appointment.location.address
+        var message = fieldWorker.username + "<br>" + startTime + "<br>" + endTime +
+                      "<br>" + appointment.location.address
         attachMessage(marker,message,appointment.location.address)
       });
       // pass through waypoints to display directions function
@@ -194,7 +199,7 @@
   }
 
   function prepareUrl() {
-    return window.location.search.replace("%20", "")
+    return window.location.search.replace("%20", " ")
   }
 
   function getParam(key) {
@@ -218,6 +223,9 @@
         window.history.pushState("object or string", "Title", updateParams("date", dateText));
         getFieldWorkers(dateText)
         date = dateText
+        if (getParam("address")) {
+          BestAppointment(getParam("address"), getParam("date"))
+        }
       }
     });
 
@@ -229,28 +237,27 @@
       }
       window.history.pushState("object or string", "Title", updateParams("role", role));
       getFieldWorkers(date, role)
+
+      if (getParam("address")) {
+        BestAppointment(getParam("address"), getParam("date"))
+      }
     });
 
-    $(".leftArrow").on("click", function(){
+    $(".arrow").on("click", function(){
       var buttonText = $(this).find("a").text()
       if (buttonText === "Previous") {
         var currentDate = new Date(date).getTime() - 86400000;
-        var previousDate = new Date(currentDate);
-        date = processDate(previousDate)
-        window.history.pushState("object or string", "Title", updateParams("date", date));
-      }
-      getFieldWorkers(date)
-    });
-
-    $(".rightArrow").on("click", function(){
-      var buttonText = $(this).find("a").text()
-      if (buttonText === "Next") {
+      } else {
         var currentDate = new Date(date).getTime() + 86400000;
-        var nextDate = new Date(currentDate);
-        date = processDate(nextDate)
-        window.history.pushState("object or string", "Title", updateParams("date", date));
       }
+      var newDate = new Date(currentDate);
+      date = processDate(newDate)
+      window.history.pushState("object or string", "Title", updateParams("date", date));
+
       getFieldWorkers(date)
+      if (getParam("address")) {
+        BestAppointment(getParam("address"), getParam("date"))
+      }
     });
 
     //Search box listener
@@ -259,6 +266,9 @@
       var state = {address: text}
 
       window.history.pushState(state, "title", updateParams("address", text));
+      // searchBar.addListener('places_changed', function() {
+      //   var places = searchBar.getPlaces();
+      // })
       BestAppointment(getParam("address"), getParam("date"))
     });
   }
