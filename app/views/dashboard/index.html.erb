@@ -3,12 +3,12 @@
     <li id="add-user"><%= link_to "Add User", "#" if admin? %></li>
     <li id="remove-user"><%= link_to "Remove User", "#" if admin? %></li>
     <li class="field_workers"><%= link_to "All", "#" %></li>
-    <li class="field_workers"><%= link_to "Photographer", "#" %></li>
-    <li class="field_workers"><%= link_to "Appraiser", "#" %></li>
+    <li class="field_workers"><%= link_to "Photographers", "#" %></li>
+    <li class="field_workers"><%= link_to "Appraisers", "#" %></li>
     <li class="datepicker">Date <input type="text" id="datepicker"></li>
     <li id="demo"></li>
-    <li class="leftArrow"><%= link_to "Previous", "#" %></li>
-    <li class="rightArrow"><%= link_to "Next", "#" %></li>
+    <li class="arrow"><%= link_to "Previous", "#" %></li>
+    <li class="arrow"><%= link_to "Next", "#" %></li>
   </ul>
 </div>
 
@@ -29,12 +29,19 @@
   var selection = 'field_workers';
   var map;
   function drawBaseMap() {
+    $("#datepicker").val(getParam("date"))
+    var address = getParam("address")
 
+    while (address.includes("%20")) {
+      address = address.replace("%20", " ")
+    }
+    $("#pac-input").val(address)
     var input = document.getElementById('pac-input');
+
     var searchBox = new google.maps.places.SearchBox(input);
 
     // render map
-    $('#map').html('');
+    // $('#map').html('');
     map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 39.753, lng: -104.9775},
       zoom: 11
@@ -46,7 +53,7 @@
     return searchBox;
   }
   // get list of field workers
-  function getFieldWorkers(date,role) {
+  function getFieldWorkers(date, role) {
     if (typeof role !== "undefined") {
       selection = role
     }
@@ -65,26 +72,6 @@
         alert('error');
       }
     });
-  }
-
-  function bestAppointmentAddress(location,latLong,date) {
-    $.ajax({
-      type: 'GET',
-      url: "/api/v1/best_appointment.json?markerAddress=" + location + "&date=" + date,
-      success: function(data) {
-        // display marker where the user input address
-        var address = addMarker(latLong);
-        attachLocMessage(address,location,latLong)
-        if ( data !== null ) {
-          // highlight appointment that is closest by drive time to searched address
-          var closest_appointment = addMarker({ lat: data.location.latitude, lng: data.location.longitude }, data.field_worker.icon);
-          attachLocMessage(closest_appointment,"Closest Spot",data.location)
-        }
-      },
-      error: function(errorBody){
-        alert("error")
-      }
-    })
   }
 
   function todaysDate(){
@@ -110,42 +97,44 @@
     var mm = today.getMonth()+1;
     var yyyy = today.getFullYear();
 
-    if(dd<10) {
-        dd='0'+dd
+    if(dd < 10) {
+        dd = '0' + dd
     }
 
-    if(mm<10) {
-        mm='0'+mm
+    if(mm < 10) {
+        mm = '0' + mm
     }
 
-    return today = mm+'/'+dd+'/'+yyyy;
+    return today = mm + '/' + dd + '/' + yyyy;
   }
 
   function formatAppointmentTime(time){
     var today = new Date(time);
     var h = today.getHours()
-    return today = h + " " + "oclock"
+    return today = h + " " + "o'clock"
   }
 
 
-  function UrlBestDay(location,date) {
-    if (getParameterByName('role') === null) {
-      var role = "undefined"
-    } else {
-      var role = getParameterByName('role')
+  function BestAppointment(location, date) {
+    var role = ""
+
+    if (getParam("role")) {
+      role = getParam("role")
     }
     $.ajax({
       type: 'GET',
-      url: "/api/v1/url_best_day.json?markerAddress=" + location + "&date=" + date + "&role=" + role,
+      url: "/api/v1/best_appointment.json?markerAddress=" + location + "&date=" + date + "&role=" + role,
       success: function(data) {
           // display marker where the user input address
         var address = addMarker({ lat: data[0].latitude, lng: data[0].longitude });
 
-        attachLocMessage(address,data[0].address,data[0].address)
+        attachLocMessage(address, data[0].address, data[0].address)
         if (typeof data[1] !== "undefined") {
           // highlight appointment that is closest by drive time to searched address
           var closest_appointment = addMarker({ lat: data[3].latitude, lng: data[3].longitude }, data[2].icon);
-          attachLocMessage(closest_appointment,"Closest Spot",data[3].address)
+          attachLocMessage(closest_appointment, "Closest", data[3].address)
+          // data[2].icon
+          // console.log(this)
         }
       },
       error: function(errorBody){
@@ -180,8 +169,8 @@
         var startTime = formatAppointmentTime(appointment.info.start_time)
         var endTime = formatAppointmentTime(appointment.info.end_time)
         var marker = addMarker({ lat: appointment.location.latitude, lng: appointment.location.longitude }, fieldWorker.icon);
-        var message = fieldWorker.username + "<br />" + startTime + "<br />" + endTime +
-                      "<br />" + appointment.location.address
+        var message = fieldWorker.username + "<br>" + startTime + "<br>" + endTime +
+                      "<br>" + appointment.location.address
         attachMessage(marker,message,appointment.location.address)
       });
       // pass through waypoints to display directions function
@@ -211,6 +200,21 @@
     });
   }
 
+  function prepareUrl() {
+    return window.location.search.replace("%20", " ")
+  }
+
+  function getParam(key) {
+    var value = ''
+    var params = prepareUrl().replace("?", "").split("&");
+    params.forEach(function (param) {
+    tmp = param.split("=")
+      if (tmp[0] === key) {
+        value = tmp[1]
+      }
+    })
+    return value
+  }
 
   // add event listeners
   function addListeners(searchBar, date) {
@@ -218,73 +222,69 @@
       onSelect: function(dateText, inst) {
         //Update the url & Update the browser history
         drawBaseMap()
-        window.history.pushState("object or string", "Title", "?date=" + dateText);
+        window.history.pushState("object or string", "Title", updateParams("date", dateText));
         getFieldWorkers(dateText)
         date = dateText
+        if (getParam("address")) {
+          BestAppointment(getParam("address"), getParam("date"))
+        }
       }
     });
 
     $(".field_workers").on("click", function(){
-      var buttonText = $(this).find("a").text()
-      if (buttonText === "Photographer") {
-        var role = "photographers"
-      } else if (buttonText === "Appraiser") {
-        var role = "appraisers"
-      } else if (buttonText === "All") {
-        var role = "field_workers"
+      var buttonText = $(this).find("a").text().toLowerCase()
+      var role = buttonText
+      if (buttonText === "all") {
+        role = "field_workers"
       }
-
+      window.history.pushState("object or string", "Title", updateParams("role", role));
       getFieldWorkers(date, role)
+
+      if (getParam("address")) {
+        BestAppointment(getParam("address"), getParam("date"))
+      }
     });
 
-    $(".leftArrow").on("click", function(){
+    $(".arrow").on("click", function(){
       var buttonText = $(this).find("a").text()
       if (buttonText === "Previous") {
         var currentDate = new Date(date).getTime() - 86400000;
-        var previousDate = new Date(currentDate);
-        date = processDate(previousDate)
-        window.history.pushState("object or string", "Title", "?date=" + date);
-      }
-      getFieldWorkers(date)
-    });
-
-    $(".rightArrow").on("click", function(){
-      var buttonText = $(this).find("a").text()
-      if (buttonText === "Next") {
+      } else {
         var currentDate = new Date(date).getTime() + 86400000;
-        var nextDate = new Date(currentDate);
-        date = processDate(nextDate)
-        window.history.pushState("object or string", "Title", "?date=" + date);
       }
+      var newDate = new Date(currentDate);
+      date = processDate(newDate)
+      window.history.pushState("object or string", "Title", updateParams("date", date));
+
       getFieldWorkers(date)
+      if (getParam("address")) {
+        BestAppointment(getParam("address"), getParam("date"))
+      }
     });
 
     //Search box listener
-    searchBar.addListener('places_changed', function() {
-      var places = searchBar.getPlaces();
-      //Add marker...
-      if (places.length === 1) {
-        bestAppointmentAddress(places[0].name,places[0].geometry.location,date)
-        //Update the url
-        //Update the browser history
+    $("#pac-input").on("change", function() {
+      var text = $(this).val()
+      var state = {address: text}
 
-      } else {
-        alert("be more specific");
-      }
-    })
+      window.history.pushState(state, "title", updateParams("address", text));
+      // searchBar.addListener('places_changed', function() {
+      //   var places = searchBar.getPlaces();
+      // })
+      BestAppointment(getParam("address"), getParam("date"))
+    });
   }
 
-  // add searched address marker to map
-  function getParameterByName(name) {
-    var url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  function updateParams(key, value) {
+    var params = prepareUrl()
+    if (!params) {
+      return "?" + key + "=" + value
+    } else if (params.includes(key)) {
+      return params.replace(key + "=" + getParam(key), key + "=" + value)
+    } else {
+      return params + "&" + key + "=" + value
+    }
   }
-
 
   function initMap() {
     // render base map
@@ -293,33 +293,31 @@
     // Set default date
     var date = todaysDate()
     // if url contains date
-    if (getParameterByName('date') !== null ) {
+    if (getParam("date")) {
       // override the date
-      date = getParameterByName('date');
+      date = getParam('date');
     }
 
     // if url contains selection
-    if (getParameterByName('role') !== null ) {
+    if (getParam("role")) {
       // override the selection
-      selection = getParameterByName('role');
+      selection = getParam("role");
     }
 
     // get list of field workers
     getFieldWorkers(date);
 
-    if (getParameterByName('address') !== null ) {
+    if (getParam("address")) {
       // find the best worker
-      UrlBestDay(getParameterByName('address'),date)
+      BestAppointment(getParam("address"), date)
     }
 
     //If the url has an address
       //Add the marker...
-    addListeners(searchBar,date);
-
+    addListeners(searchBar, date);
   }
 
   function attachMessage(marker, secretMessage, address) {
-
     var infowindow = new google.maps.InfoWindow({
       content: secretMessage
     });
@@ -331,15 +329,12 @@
     marker.addListener('mouseout', function() {
       infowindow.close(marker.get('map'), marker);
     })
-
   }
 
   function attachLocMessage(marker, secretMessage, address) {
-
     var infowindow = new google.maps.InfoWindow({
       content: secretMessage
     });
-
     // marker.addListener('mouseover', function() {
       infowindow.open(marker.get('map'), marker);
     // })
@@ -347,7 +342,6 @@
     marker.addListener('clickOn', function() {
       infowindow.close(marker.get('map'), marker);
     })
-
   }
 
 </script>

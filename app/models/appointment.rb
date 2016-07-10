@@ -17,16 +17,15 @@ class Appointment < ActiveRecord::Base
 
   def self.best_appointment(appointment_data)
     appointments = find_by_url_time(appointment_data[:date],appointment_data[:role])
-    appointments.sort_by do |appointment|
+    appointments.min_by do |appointment|
       GoogleDistanceMatrix.new.time(appointment.location.address, appointment_data[:markerAddress])
-    end.first
+    end
   end
 
-  def self.find_by_url_time(date,role)
-    if role == "undefined"
-      appointments = Appointment.joins(:field_worker).where("field_workers.status = ?", 'active')
-    else
-      appointments = Appointment.joins(:field_worker).where("field_workers.status = ? AND field_workers.role = ?", 'active', f_w_role_converter(role))
+  def self.find_by_url_time(date, role)
+    appointments = Appointment.joins(:field_worker).where(field_workers: {status: "active"})
+    if role != "undefined"
+      appointments = appointments.where(field_workers: {role: f_w_role_converter(role)})
     end
     appointments.select { |appointment| appointment.url_time == date }
   end
