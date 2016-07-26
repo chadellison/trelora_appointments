@@ -7,7 +7,7 @@ A team project by:
 
 ## Description
 
-Takes in scheduled appointments through Google’s calendar api and then displays them on a map using Google’s maps api. The appointments are sorted by time and employee so that a new appointment can be scheduled easily.
+Takes in scheduled appointments through Google’s calendar api and then displays them on a map using Google’s maps api. The appointments are sorted by date and employee so that a new appointment can be scheduled easily.
 
 [Production](trelora-appointments.herokuapp.com)
 
@@ -15,9 +15,9 @@ If you want to to use this application
 
 - clone `https://github.com/chadellison/trelora_appointments.git`
 
-- You'll need to get a google client service account. You can access it here ``
+- You'll need to get a google client service account. You can access it [here](https://console.developers.google.com/apis/credentials/serviceaccountkey?project=platinum-depot-138422) 
 
-- If you are using sub-calendars within your calendar you'll need to go to `app/services/google_calendar_service.rb` and edit it to pull in events from the correct calendars. You'll will need to know the correct calendar-id to do this.
+- If you are using sub-calendars within your calendar you will need to go to `app/services/google_calendar_service.rb` and edit it to pull in events from the correct calendars. You will need to know the correct calendar-id to do this.
 
 - You will also need to set the following ENVIRONMENT VARIABLES  
  - [GOOGLE_API_KEY](https://console.developers.google.com/projectselector/apis/credentials)  
