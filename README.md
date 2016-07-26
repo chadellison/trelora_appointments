@@ -2,8 +2,8 @@
 
 A team project by:
 
-[Thom Schlereth](github.com/thompickett)
-[Chad Ellison](github.com/chadellison)
+[Thom Schlereth](http://github.com/thompickett)
+[Chad Ellison](http://github.com/chadellison)
 
 ## Description
 
