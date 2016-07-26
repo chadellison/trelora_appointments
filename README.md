@@ -9,7 +9,7 @@ A team project by:
 
 Takes in scheduled appointments through Google’s calendar api and then displays them on a map using Google’s maps api. The appointments are sorted by date and employee so that a new appointment can be scheduled easily.
 
-[Production](trelora-appointments.herokuapp.com)
+[Production](http://trelora-appointments.herokuapp.com/)
 
 If you want to to use this application
 
