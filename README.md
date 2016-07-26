@@ -5,6 +5,8 @@ A team project by:
 [Thom Schlereth](http://github.com/thompickett)
 [Chad Ellison](http://github.com/chadellison)
 
+![denver trelora-appointments map](./app/assets/images/trelora-appointments.png)  
+
 ## Description
 
 Takes in scheduled appointments through Google’s calendar api and then displays them on a map using Google’s maps api. The appointments are sorted by date and employee so that a new appointment can be scheduled easily.
@@ -15,7 +17,7 @@ If you want to to use this application
 
 - clone `https://github.com/chadellison/trelora_appointments.git`
 
-- You'll need to get a google client service account. You can access it [here](https://console.developers.google.com/apis/credentials/serviceaccountkey?project=platinum-depot-138422) 
+- You'll need to get a google client service account. You can access it [here](https://console.developers.google.com/apis/credentials/serviceaccountkey?project=platinum-depot-138422)
 
 - If you are using sub-calendars within your calendar you will need to go to `app/services/google_calendar_service.rb` and edit it to pull in events from the correct calendars. You will need to know the correct calendar-id to do this.
 
